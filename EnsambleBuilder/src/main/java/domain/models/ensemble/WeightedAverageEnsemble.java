@@ -3,11 +3,12 @@ package domain.models.ensemble;
 import domain.Ensemble;
 import domain.Model;
 import domain.TimeSeries;
-import domain.models.Quality;
+import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidTemporaryValueException;
+import domain.Quality;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
@@ -25,7 +26,7 @@ public class WeightedAverageEnsemble extends Ensemble {
     /**
      * Обучить метаалгоритм ансамблевой модели.
      */
-    protected void fitMetaAlgorithm() {
+    protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
         Map<Model, Double> modelsMapes = new HashMap<Model, Double>();
         double sumMapes = calculateMapeForModels(modelsMapes);
         for (Map.Entry<Model, Double> modelMape : modelsMapes.entrySet()) {
@@ -36,10 +37,12 @@ public class WeightedAverageEnsemble extends Ensemble {
 
     /**
      * Предсказать по обученной ансамблевой модели.
+     *
      * @param t метка времени предсказываемого значения.
      * @return прогноз.
      */
-    public double forecast(int t) {
+    public double forecast(int t) throws InvalidTemporaryValueException, ForecastNotFitedModelException {
+        EnableForForecasting(t);
         double weightedAverage = 0;
         for (Map.Entry<Model, Double> weightedModel : weightedModels.entrySet()) {
             weightedAverage += weightedModel.getKey().forecast(t) * weightedModel.getValue();
@@ -49,10 +52,11 @@ public class WeightedAverageEnsemble extends Ensemble {
 
     /**
      * Рассчитать MAPE для всех моделей.
+     *
      * @param modelsMapes MAPE для всех моделей.
      * @return сумма MAPE всех моделей.
      */
-    private double calculateMapeForModels(Map<Model, Double> modelsMapes) {
+    private double calculateMapeForModels(Map<Model, Double> modelsMapes) throws InvalidTemporaryValueException, ForecastNotFitedModelException {
         double sumMapes = 0;
         for (Model model : models) {
             double sum = 0;
@@ -70,7 +74,8 @@ public class WeightedAverageEnsemble extends Ensemble {
 
     /**
      * Рассчитать вес модели.
-     * @param mape MAPE модели.
+     *
+     * @param mape     MAPE модели.
      * @param sumMapes сумма MAPE всех моделей.
      * @return вес модели.
      */

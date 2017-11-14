@@ -25,6 +25,7 @@ public class TimeSeries {
 
     /**
      * Получить временной ряд.
+     *
      * @return временной ряд.
      */
     public Map<Integer, Double> getTimeSeries() {
@@ -65,10 +66,10 @@ public class TimeSeries {
         if (o == null) return false;
 
         TimeSeries that = (TimeSeries) o;
-        if(that == null || that.getSize() != getSize()) return false;
+        if (that == null || that.getSize() != getSize()) return false;
 
         for (Map.Entry<Integer, Double> value : timeSeries.entrySet()) {
-            if (!Precision.equals(value.getValue(),that.getTimeValue(value.getKey()))) {
+            if (!Precision.equals(value.getValue(), that.getTimeValue(value.getKey()))) {
                 return false;
             }
         }

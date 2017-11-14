@@ -1,5 +1,8 @@
 package domain;
 
+import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidTemporaryValueException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -12,7 +15,7 @@ public abstract class Model {
     /**
      * Порядок модели.
      */
-    protected final int order;
+    protected int order;
 
     /**
      * Флаг была ли модель обучена.
@@ -28,17 +31,19 @@ public abstract class Model {
     /**
      * Обучить модель.
      */
-    public abstract void fit();
+    public abstract void fit() throws InvalidTemporaryValueException, ForecastNotFitedModelException;
 
     /**
      * Предсказать по обученной модели.
+     *
      * @param t метка времени предсказываемого значения.
      * @return прогноз.
      */
-    public abstract double forecast(int t);
+    public abstract double forecast(int t) throws InvalidTemporaryValueException, ForecastNotFitedModelException;
 
     /**
      * Получить временной ряд, с которым работает модель.
+     *
      * @return временной ряд.
      */
     public TimeSeries getTimeSeries() {
@@ -47,6 +52,7 @@ public abstract class Model {
 
     /**
      * Узнать обучена ли уже модель или нет.
+     *
      * @return результат.
      */
     public boolean isFit() {
@@ -62,9 +68,26 @@ public abstract class Model {
 
     /**
      * Получить порядок модели.
+     *
      * @return порядок модели.
      */
     public int getOrder() {
         return order;
+    }
+
+    /**
+     * Выброс исключений в случае невозможности сделать предсказание.
+     *
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
+     */
+    public void EnableForForecasting(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+        if (!isFit()) {
+            throw new ForecastNotFitedModelException();
+        }
+
+        if (t <= order || t > timeSeries.getSize() + 1) {
+            throw new InvalidTemporaryValueException();
+        }
     }
 }
