@@ -96,13 +96,14 @@ public class NeuralEnsemble extends Ensemble {
         int size = timeSeries.getSize() - order;
         INDArray x = Nd4j.create(size, models.size());
         INDArray y = Nd4j.create(size, NUM_OUTPUTS);
+        int j = 0;
         for (int t = order + 1; t < timeSeries.getSize(); ++t) {
             for (int i = 0; i < models.size(); i++) {
                 Model model = models.get(i);
-                x.putScalar(new int[]{t, i}, model.forecast(t));
+                x.putScalar(new int[]{j, i}, model.forecast(t));
             }
-
-            y.putScalar(t, timeSeries.getTimeValue(t));
+            y.putScalar(j, timeSeries.getTimeValue(t));
+            ++j;
         }
         return new ListDataSetIterator(new DataSet(x, y).asList(), BATCH_SIZE);
     }
