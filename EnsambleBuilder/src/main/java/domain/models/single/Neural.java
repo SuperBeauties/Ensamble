@@ -93,7 +93,7 @@ public class Neural extends Model {
         INDArray x = Nd4j.create(size, order);
         INDArray y = Nd4j.create(size, NUM_OUTPUTS);
         int j = 0;
-        for (int t = order + 1; t < timeSeriesTrain.getSize(); ++t) {
+        for (int t = order + 1; t <= timeSeriesTrain.getSize(); ++t) {
             for(int i = 0; i < order; ++i) {
                 x.putScalar(new int[]{j, i}, timeSeriesTrain.getTimeValue(i + j + 1));
             }

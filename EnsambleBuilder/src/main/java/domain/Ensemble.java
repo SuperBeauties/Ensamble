@@ -24,6 +24,7 @@ public abstract class Ensemble extends Model {
      * Добавить модель.
      *
      * @param model модель.
+     * @throws NoEqualsTimeSeriesException разные временные ряды в моделях.
      */
     public void addModel(Model model) throws NoEqualsTimeSeriesException {
         if (!timeSeries.equals(model.getTimeSeries())) {

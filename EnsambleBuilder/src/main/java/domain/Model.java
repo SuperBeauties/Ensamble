@@ -42,22 +42,22 @@ public abstract class Model {
 
 
     public Model(TimeSeries timeSeries, int order) {
+        this.timeSeries = timeSeries;
+        this.order = order;
+
         this.timeSeriesTrain = new TimeSeries();
         this.timeSeriesTest = new TimeSeries();
         this.timeSeriesValidate = new TimeSeries();
-        partTimeSeries(timeSeries);
-
-        this.timeSeries = timeSeries;
-        this.order = order;
+        partTimeSeries();
     }
 
-     /**
+    /**
      * Получить mape для обучающей выборки.
      *
      * @return mape.
-     * @throws TimeSeriesSizeException
-     * @throws ForecastNotFitedModelException
-     * @throws InvalidTemporaryValueException
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
     public double getTrainMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         return mape(timeSeriesTrain);
@@ -67,9 +67,9 @@ public abstract class Model {
      * Получить mape для обучающей выборки.
      *
      * @return mape.
-     * @throws TimeSeriesSizeException
-     * @throws ForecastNotFitedModelException
-     * @throws InvalidTemporaryValueException
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
     public double getTestMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         return mape(timeSeriesTest);
@@ -79,16 +79,25 @@ public abstract class Model {
      * Получить mape для обучающей выборки.
      *
      * @return mape.
-     * @throws TimeSeriesSizeException
-     * @throws ForecastNotFitedModelException
-     * @throws InvalidTemporaryValueException
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
     public double getValidateMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         return mape(timeSeriesValidate);
     }
 
+    /**
+     * Была ли модель переобучена.
+     *
+     * @param border граница переобученности модели.
+     * @return была ли модель переобучена.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     */
     public boolean isOverFited(double border) throws ForecastNotFitedModelException, InvalidTemporaryValueException, TimeSeriesSizeException {
-        if(!isFit()) {
+        if (!isFit()) {
             throw new ForecastNotFitedModelException();
         }
         double mapeTrain = getTrainMape();
@@ -189,10 +198,8 @@ public abstract class Model {
 
     /**
      * Поделить временной ряд.
-     *
-     * @param timeSeries временной ряд.
      */
-    private void partTimeSeries(TimeSeries timeSeries) {
+    private void partTimeSeries() {
         List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
         int size = keys.size();
         int trainIndex = 0;
@@ -214,9 +221,9 @@ public abstract class Model {
      *
      * @param timeSeries временной ряд.
      * @return mape.
-     * @throws InvalidTemporaryValueException
-     * @throws ForecastNotFitedModelException
-     * @throws TimeSeriesSizeException
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      */
     private double mape(TimeSeries timeSeries) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesFact = new TimeSeries();
