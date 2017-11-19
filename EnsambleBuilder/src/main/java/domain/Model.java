@@ -2,6 +2,7 @@ package domain;
 
 import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
+import domain.exceptions.TimeSeriesSizeException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -48,6 +49,52 @@ public abstract class Model {
 
         this.timeSeries = timeSeries;
         this.order = order;
+    }
+
+     /**
+     * Получить mape для обучающей выборки.
+     *
+     * @return mape.
+     * @throws TimeSeriesSizeException
+     * @throws ForecastNotFitedModelException
+     * @throws InvalidTemporaryValueException
+     */
+    public double getTrainMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        return mape(timeSeriesTrain);
+    }
+
+    /**
+     * Получить mape для обучающей выборки.
+     *
+     * @return mape.
+     * @throws TimeSeriesSizeException
+     * @throws ForecastNotFitedModelException
+     * @throws InvalidTemporaryValueException
+     */
+    public double getTestMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        return mape(timeSeriesTest);
+    }
+
+    /**
+     * Получить mape для обучающей выборки.
+     *
+     * @return mape.
+     * @throws TimeSeriesSizeException
+     * @throws ForecastNotFitedModelException
+     * @throws InvalidTemporaryValueException
+     */
+    public double getValidateMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        return mape(timeSeriesValidate);
+    }
+
+    public boolean isOverFited(double border) throws ForecastNotFitedModelException, InvalidTemporaryValueException, TimeSeriesSizeException {
+        if(!isFit()) {
+            throw new ForecastNotFitedModelException();
+        }
+        double mapeTrain = getTrainMape();
+        double mapeTest = getTestMape();
+        double sMape = Quality.sMape(mapeTrain, mapeTest);
+        return sMape > border;
     }
 
     /**
@@ -140,20 +187,44 @@ public abstract class Model {
         }
     }
 
+    /**
+     * Поделить временной ряд.
+     *
+     * @param timeSeries временной ряд.
+     */
     private void partTimeSeries(TimeSeries timeSeries) {
-        List<Object> values = timeSeries.getTimeSeries().values().stream().collect(Collectors.toList());
-        int size = values.size();
+        List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
+        int size = keys.size();
         int trainIndex = 0;
         int testIndex = (int) (size * 0.7);
         int validateIndex = (int) (size * 0.9);
-        for (Object value : values.subList(trainIndex, testIndex)) {
-            this.timeSeriesTrain.addTimeValue((Double) value);
+        for (Object key : keys.subList(trainIndex, testIndex)) {
+            this.timeSeriesTrain.add((int) key, timeSeries.getTimeValue((int) key));
         }
-        for (Object value : values.subList(testIndex, validateIndex)) {
-            this.timeSeriesTest.addTimeValue((Double) value);
+        for (Object key : keys.subList(testIndex, validateIndex)) {
+            this.timeSeriesTest.add((int) key, timeSeries.getTimeValue((int) key));
         }
-        for (Object value : values.subList(validateIndex, size - 1)) {
-            this.timeSeriesValidate.addTimeValue((Double) value);
+        for (Object key : keys.subList(validateIndex, size - 1)) {
+            this.timeSeriesValidate.add((int) key, timeSeries.getTimeValue((int) key));
         }
+    }
+
+    /**
+     * Рассчитать mape для модели.
+     *
+     * @param timeSeries временной ряд.
+     * @return mape.
+     * @throws InvalidTemporaryValueException
+     * @throws ForecastNotFitedModelException
+     * @throws TimeSeriesSizeException
+     */
+    private double mape(TimeSeries timeSeries) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
+        TimeSeries timeSeriesFact = new TimeSeries();
+        TimeSeries timeSeriesCalc = new TimeSeries();
+        for (int i = order + 1; i <= timeSeries.getSize(); ++i) {
+            timeSeriesFact.add(i, timeSeries.getTimeValue(i));
+            timeSeriesCalc.add(i, forecast(i));
+        }
+        return Quality.mape(timeSeriesFact, timeSeriesCalc);
     }
 }

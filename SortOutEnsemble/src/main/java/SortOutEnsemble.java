@@ -4,6 +4,7 @@ import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.exceptions.NoEqualsTimeSeriesException;
+import domain.exceptions.TimeSeriesSizeException;
 import domain.models.ensemble.NeuralEnsemble;
 import domain.models.ensemble.WeightedAverageEnsemble;
 import domain.models.single.Arima;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 public class SortOutEnsemble {
@@ -24,18 +24,18 @@ public class SortOutEnsemble {
     private final int orderNeural;
     private final int orderArima;
     private final double qualityBorder;
-    private final double overLearnedBorder;
+    private final double overFitedBorder;
 
-    public SortOutEnsemble(TimeSeries timeSeries, int orderArima, int orderNeural, int orderFuzzy, double qualityBorder, double overLearnedBorder) {
+    public SortOutEnsemble(TimeSeries timeSeries, int orderArima, int orderNeural, int orderFuzzy, double qualityBorder, double overFitedBorder) {
         this.timeSeries = timeSeries;
         this.orderFuzzy = orderFuzzy;
         this.orderNeural = orderNeural;
         this.orderArima = orderArima;
         this.qualityBorder = qualityBorder;
-        this.overLearnedBorder = overLearnedBorder;
+        this.overFitedBorder = overFitedBorder;
     }
 
-    public void sortOut() throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException {
+    public void sortOut() throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException {
         List<Model> modelsArima = fitedModelsList(Models.ARIMA, orderArima);
         List<Model> modelsNeural = fitedModelsList(Models.NEURAL, orderNeural);
         List<Model> modelsFuzzy = fitedModelsList(Models.FUZZY, orderFuzzy);
@@ -52,11 +52,15 @@ public class SortOutEnsemble {
 
     }
 
-    private void selectEnsembles(List<Ensemble> ensembles) {
-
+    private void selectEnsembles(List<Ensemble> ensembles) throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        for (Ensemble ensemble : ensembles) {
+            if(ensemble.getTestMape() > qualityBorder) {
+                
+            }
+        }
     }
 
-    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException {
+    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         List<String> tableSortOut = tableSortOut(allModels.size());
         for (String rowSortOut : tableSortOut) {
             Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries);
@@ -73,25 +77,23 @@ public class SortOutEnsemble {
     }
 
     @Nullable
-    private void createEnsemble(String row, List<Model> models, Ensemble weighted, Ensemble neural) throws NoEqualsTimeSeriesException {
+    private void createEnsemble(String row, List<Model> models, Ensemble weighted, Ensemble neural) throws NoEqualsTimeSeriesException, TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         int size = models.size();
         int modelsCount = 0;
         for (int i = 0; i < row.length(); ++i) {
             if (row.charAt(i) == '1') {
                 Model model = models.get(size - i - 1);
-                weighted.addModel(model);
-                neural.addModel(model);
-                ++modelsCount;
+                if(!model.isOverFited(overFitedBorder)) {
+                    weighted.addModel(model);
+                    neural.addModel(model);
+                    ++modelsCount;
+                }
             }
         }
         if (modelsCount <= 1) {
             weighted = null;
             neural = null;
         }
-    }
-
-    private void isOverLearnedModel() {
-
     }
 
     private List<String> tableSortOut(int size) {

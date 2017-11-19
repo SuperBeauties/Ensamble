@@ -24,6 +24,16 @@ public class TimeSeries {
     }
 
     /**
+     * Добавить значение временного ряда.
+     *
+     * @param t     временная метка.
+     * @param value значение.
+     */
+    public void add(int t, double value) {
+        timeSeries.put(t, value);
+    }
+
+    /**
      * Получить временной ряд.
      *
      * @return временной ряд.
