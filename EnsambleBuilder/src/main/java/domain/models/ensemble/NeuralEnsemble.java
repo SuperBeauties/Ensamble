@@ -93,16 +93,16 @@ public class NeuralEnsemble extends Ensemble {
      */
     @NotNull
     private DataSetIterator getTrainingData() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
-        int size = timeSeries.getSize() - order;
+        int size = timeSeriesTrain.getSize() - order;
         INDArray x = Nd4j.create(size, models.size());
         INDArray y = Nd4j.create(size, NUM_OUTPUTS);
         int j = 0;
-        for (int t = order + 1; t < timeSeries.getSize(); ++t) {
+        for (int t = order + 1; t < timeSeriesTrain.getSize(); ++t) {
             for (int i = 0; i < models.size(); i++) {
                 Model model = models.get(i);
                 x.putScalar(new int[]{j, i}, model.forecast(t));
             }
-            y.putScalar(j, timeSeries.getTimeValue(t));
+            y.putScalar(j, timeSeriesTrain.getTimeValue(t));
             ++j;
         }
         return new ListDataSetIterator(new DataSet(x, y).asList(), BATCH_SIZE);

@@ -4,6 +4,8 @@ import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 public abstract class Model {
@@ -11,6 +13,21 @@ public abstract class Model {
      * Временной ряд.
      */
     protected final TimeSeries timeSeries;
+
+    /**
+     * Временной ряд для обучения.
+     */
+    protected TimeSeries timeSeriesTrain;
+
+    /**
+     * Временной ряд для тестирования.
+     */
+    protected TimeSeries timeSeriesTest;
+
+    /**
+     * Временной ряд для контрольного тестирования.
+     */
+    protected TimeSeries timeSeriesValidate;
 
     /**
      * Порядок модели.
@@ -24,6 +41,11 @@ public abstract class Model {
 
 
     public Model(TimeSeries timeSeries, int order) {
+        this.timeSeriesTrain = new TimeSeries();
+        this.timeSeriesTest = new TimeSeries();
+        this.timeSeriesValidate = new TimeSeries();
+        partTimeSeries(timeSeries);
+
         this.timeSeries = timeSeries;
         this.order = order;
     }
@@ -76,18 +98,62 @@ public abstract class Model {
     }
 
     /**
+     * Получить обучающий временной ряд.
+     *
+     * @return обучающий временной ряд.
+     */
+    public TimeSeries getTimeSeriesTrain() {
+        return timeSeriesTrain;
+    }
+
+    /**
+     * Получить тестовый временной ряд.
+     *
+     * @return тестовый временной ряд.
+     */
+    public TimeSeries getTimeSeriesTest() {
+        return timeSeriesTest;
+    }
+
+    /**
+     * Получить валидационный временной ряд.
+     *
+     * @return валидационный временной ряд.
+     */
+    public TimeSeries getTimeSeriesValidate() {
+        return timeSeriesValidate;
+    }
+
+    /**
      * Выброс исключений в случае невозможности сделать предсказание.
      *
      * @throws ForecastNotFitedModelException модель не была обучена.
      * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
-    public void EnableForForecasting(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+    protected void EnableForForecasting(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
         if (!isFit()) {
             throw new ForecastNotFitedModelException();
         }
 
         if (t <= order || t > timeSeries.getSize() + 1) {
             throw new InvalidTemporaryValueException();
+        }
+    }
+
+    private void partTimeSeries(TimeSeries timeSeries) {
+        List<Object> values = timeSeries.getTimeSeries().values().stream().collect(Collectors.toList());
+        int size = values.size();
+        int trainIndex = 0;
+        int testIndex = (int) (size * 0.7);
+        int validateIndex = (int) (size * 0.9);
+        for (Object value : values.subList(trainIndex, testIndex)) {
+            this.timeSeriesTrain.addTimeValue((Double) value);
+        }
+        for (Object value : values.subList(testIndex, validateIndex)) {
+            this.timeSeriesTest.addTimeValue((Double) value);
+        }
+        for (Object value : values.subList(validateIndex, size - 1)) {
+            this.timeSeriesValidate.addTimeValue((Double) value);
         }
     }
 }

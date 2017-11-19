@@ -12,7 +12,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="1" target="1.5" />
-      <module name="EnsembleBuilder" target="1.5" />
+      <module name="EnsembleBuilder" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

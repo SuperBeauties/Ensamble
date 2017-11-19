@@ -89,16 +89,16 @@ public class Neural extends Model {
      */
     @NotNull
     private DataSetIterator getTrainingData()  {
-        int size = timeSeries.getSize() - order;
+        int size = timeSeriesTrain.getSize() - order;
         INDArray x = Nd4j.create(size, order);
         INDArray y = Nd4j.create(size, NUM_OUTPUTS);
         int j = 0;
-        for (int t = order + 1; t < timeSeries.getSize(); ++t) {
+        for (int t = order + 1; t < timeSeriesTrain.getSize(); ++t) {
             for(int i = 0; i < order; ++i) {
-                x.putScalar(new int[]{j, i}, timeSeries.getTimeValue(i + j + 1));
+                x.putScalar(new int[]{j, i}, timeSeriesTrain.getTimeValue(i + j + 1));
             }
 
-            y.putScalar(j, timeSeries.getTimeValue(t));
+            y.putScalar(j, timeSeriesTrain.getTimeValue(t));
             ++j;
         }
         return new ListDataSetIterator(new DataSet(x, y).asList(), BATCH_SIZE);

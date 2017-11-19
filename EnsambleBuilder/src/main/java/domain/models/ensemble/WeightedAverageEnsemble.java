@@ -60,11 +60,11 @@ public class WeightedAverageEnsemble extends Ensemble {
         double sumMapes = 0;
         for (Model model : models) {
             double sum = 0;
-            for (int t = order + 1; t < timeSeries.getSize(); ++t) {
-                sum += Quality.percentError(timeSeries.getTimeValue(t), model.forecast(t));
+            for (int t = order + 1; t < timeSeriesTrain.getSize(); ++t) {
+                sum += Quality.percentError(timeSeriesTrain.getTimeValue(t), model.forecast(t));
             }
 
-            double mape = sum / (timeSeries.getSize() - order);
+            double mape = sum / (timeSeriesTrain.getSize() - order);
             sumMapes += mape;
             modelsMapes.put(model, mape);
         }
