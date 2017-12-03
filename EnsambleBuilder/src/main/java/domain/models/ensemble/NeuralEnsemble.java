@@ -28,7 +28,7 @@ import java.util.List;
 public class NeuralEnsemble extends Ensemble {
     private static final int SEED = 12345;
     private static final int ITERATIONS = 1;
-    private static final int N_EPOCHS = 2000;
+    private static final int N_EPOCHS = 10;
     private static final int BATCH_SIZE = 100;
     private static final double LEARNING_RATE = 0.01;
     private static final int NUM_OUTPUTS = 1;

@@ -25,7 +25,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 public class Neural extends Model {
     private static final int SEED = 12345;
     private static final int ITERATIONS = 1;
-    private static final int N_EPOCHS = 2000;
+    private static final int N_EPOCHS = 10;
     private static final int BATCH_SIZE = 100;
     private static final double LEARNING_RATE = 0.01;
     private static final int NUM_OUTPUTS = 1;
@@ -53,7 +53,7 @@ public class Neural extends Model {
         EnableForForecasting(t);
         INDArray x = Nd4j.create(1, order);
         for (int i = 0; i < order; i++) {
-            x.putScalar(new int[]{0, i},timeSeries.getTimeValue(t - i + order));
+            x.putScalar(new int[]{0, i},timeSeries.getTimeValue(t + i - order));
         }
         INDArray res = net.output(x, false);
         return res.getDouble(0);
