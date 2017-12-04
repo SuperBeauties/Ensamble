@@ -56,17 +56,29 @@ public class SortOutEnsemble {
      * Необходимо ли добавлять в ансамбль нечеткую модель.
      */
     private final boolean needFuzzy;
+    /**
+     * Необходимо ли строить нейронный ансамбль.
+     */
+    private final boolean needNeuralEnsemble;
+    /**
+     * Необходимо ли строить средневзвешенный ансамбль.
+     */
+    private final boolean needWeightedEnsemble;
+
+    private final static int TEST_PERSENT = 22;
 
     public SortOutEnsemble(
             TimeSeries timeSeries,
+            boolean needArima,
+            boolean needNeural,
+            boolean needFuzzy,
+            double qualityBorder,
+            double overFitedBorder,
             int orderArima,
             int orderNeural,
             int orderFuzzy,
-            double qualityBorder,
-            double overFitedBorder,
-            boolean needArima,
-            boolean needNeural,
-            boolean needFuzzy) {
+            boolean needNeuralEnsemble,
+            boolean needWightedEnsemble) {
 
         this.timeSeries = timeSeries;
         this.orderArima = orderArima;
@@ -77,6 +89,8 @@ public class SortOutEnsemble {
         this.needArima = needArima;
         this.needNeural = needNeural;
         this.needFuzzy = needFuzzy;
+        this.needNeuralEnsemble = needNeuralEnsemble;
+        this.needWeightedEnsemble = needWightedEnsemble;
     }
 
     /**
@@ -135,13 +149,13 @@ public class SortOutEnsemble {
     private Model createModel(Models model, int order) {
         switch (model) {
             case ARIMA: {
-                return new Arima(timeSeries, order);
+                return new Arima(timeSeries, order, TEST_PERSENT);
             }
             case NEURAL: {
-                return new Neural(timeSeries, order);
+                return new Neural(timeSeries, order, TEST_PERSENT);
             }
             case FUZZY: {
-                return new Fuzzy(timeSeries, order);
+                return new Fuzzy(timeSeries, order, TEST_PERSENT);
             }
         }
         return null;
@@ -161,15 +175,18 @@ public class SortOutEnsemble {
     private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         List<String> tableSortOut = tableSortOut(allModels.size());
         for (String rowSortOut : tableSortOut) {
-            Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries);
-            Ensemble ensembleNeural = new NeuralEnsemble(timeSeries);
+            Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, TEST_PERSENT);
+            Ensemble ensembleNeural = new NeuralEnsemble(timeSeries, TEST_PERSENT);
             createEnsemble(rowSortOut, allModels, ensembleWeighted, ensembleNeural);
             if (ensembleWeighted != null && ensembleNeural != null) {
-                ensembleWeighted.fit();
-                ensembleNeural.fit();
-
-                weighted.add(ensembleWeighted);
-                neural.add(ensembleNeural);
+                if (needWeightedEnsemble) {
+                    ensembleWeighted.fit();
+                    weighted.add(ensembleWeighted);
+                }
+                if (needNeuralEnsemble) {
+                    ensembleNeural.fit();
+                    neural.add(ensembleNeural);
+                }
             }
         }
     }

@@ -12,31 +12,24 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class Arima extends Model {
-    ArimaModel fittedModel;
-    final int p;
-    final int d;
-    final int q;
-    final int P;
-    final int D;
-    final int Q;
-    final int m;
+    private ArimaModel fittedModel;
+    private final int p;
+    private static final int d = 1;
+    private static final int q = 0;
+    private static final int P = 0;
+    private static final int D = 0;
+    private static final int Q = 0;
+    private static final int m = 0;
 
-    public Arima(TimeSeries timeSeries, int order) {
-        super(timeSeries, order);
+    public Arima(TimeSeries timeSeries, int order, int testPercent) {
+        super(timeSeries, order, testPercent);
         p = order;
-        d = 1;
-        q = 0;
-        P = 0;
-        D = 0;
-        Q = 0;
-        m = 0;
     }
 
     public void fit() {
         double[] data = getTrainingData();
         ArimaParams paramsForecast = new ArimaParams(p, d, q, P, D, Q, m);
-        fittedModel = ArimaSolver.estimateARIMA(
-                paramsForecast, data, data.length, data.length + 1);
+        fittedModel = ArimaSolver.estimateARIMA(paramsForecast, data, data.length, data.length + 1);
         setFit();
     }
 

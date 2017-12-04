@@ -10,14 +10,25 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public abstract class Ensemble extends Model {
+
+
     /**
      * Список моделей составляющих ансамбль.
      */
     protected List<Model> models;
 
-    public Ensemble(TimeSeries timeSeries) {
-        super(timeSeries, 0);
+    public Ensemble(TimeSeries timeSeries, int testPercent) {
+        super(timeSeries, 0, testPercent);
         models = new ArrayList<Model>();
+    }
+
+    /**
+     * Получить список моделей ансамбля.
+     *
+     * @return список моделей ансамбля.
+     */
+    public List<Model> getModels() {
+        return models;
     }
 
     /**

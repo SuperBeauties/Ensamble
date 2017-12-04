@@ -9,6 +9,7 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.GravesLSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -32,8 +33,8 @@ public class Neural extends Model {
 
     private MultiLayerNetwork net;
 
-    public Neural(TimeSeries timeSeries, int order) {
-        super(timeSeries, order);
+    public Neural(TimeSeries timeSeries, int order, int testPercent) {
+        super(timeSeries, order, testPercent);
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);
         net.init();
@@ -75,7 +76,7 @@ public class Neural extends Model {
                 .updater(Updater.NESTEROVS)
                 .momentum(0.9)
                 .list()
-                .layer(1, new GravesLSTM.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes).activation(Activation.HARDTANH).build())
+                .layer(1, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes).activation(Activation.HARDTANH).build())
                 .layer(2, new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.SIGMOID).nIn(numHiddenNodes).nOut(NUM_OUTPUTS).build())
                 .pretrain(false)
                 .backprop(true)

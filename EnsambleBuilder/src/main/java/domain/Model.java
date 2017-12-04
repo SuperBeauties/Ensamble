@@ -3,6 +3,7 @@ package domain;
 import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.exceptions.TimeSeriesSizeException;
+import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -26,11 +27,6 @@ public abstract class Model {
     protected TimeSeries timeSeriesTest;
 
     /**
-     * Временной ряд для контрольного тестирования.
-     */
-    protected TimeSeries timeSeriesValidate;
-
-    /**
      * Порядок модели.
      */
     protected int order;
@@ -41,14 +37,13 @@ public abstract class Model {
     private boolean isFit;
 
 
-    public Model(TimeSeries timeSeries, int order) {
+    public Model(TimeSeries timeSeries, int order, int testPercent) {
         this.timeSeries = timeSeries;
         this.order = order;
 
         this.timeSeriesTrain = new TimeSeries();
         this.timeSeriesTest = new TimeSeries();
-        this.timeSeriesValidate = new TimeSeries();
-        partTimeSeries();
+        partTimeSeries(testPercent);
     }
 
     /**
@@ -73,18 +68,6 @@ public abstract class Model {
      */
     public double getTestMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         return mape(timeSeriesTest);
-    }
-
-    /**
-     * Получить mape для обучающей выборки.
-     *
-     * @return mape.
-     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
-     * @throws ForecastNotFitedModelException модель не была обучена.
-     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
-     */
-    public double getValidateMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
-        return mape(timeSeriesValidate);
     }
 
     /**
@@ -172,15 +155,6 @@ public abstract class Model {
     }
 
     /**
-     * Получить валидационный временной ряд.
-     *
-     * @return валидационный временной ряд.
-     */
-    public TimeSeries getTimeSeriesValidate() {
-        return timeSeriesValidate;
-    }
-
-    /**
      * Выброс исключений в случае невозможности сделать предсказание.
      *
      * @throws ForecastNotFitedModelException модель не была обучена.
@@ -199,21 +173,27 @@ public abstract class Model {
     /**
      * Поделить временной ряд.
      */
-    private void partTimeSeries() {
+    private void partTimeSeries(int testPercent) {
         List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
         int size = keys.size();
-        int trainIndex = 0;
-        int testIndex = (int) (size * 0.7);
-        int validateIndex = (int) (size * 0.9);
-        for (Object key : keys.subList(trainIndex, testIndex)) {
-            this.timeSeriesTrain.add((int) key, timeSeries.getTimeValue((int) key));
+        int trainSize = trainSize(size, testPercent);
+        for (Object key : keys.subList(0, trainSize)) {
+            this.timeSeriesTrain.addTimeValue(timeSeries.getTimeValue((int) key));
         }
-        for (Object key : keys.subList(testIndex, validateIndex)) {
-            this.timeSeriesTest.add((int) key, timeSeries.getTimeValue((int) key));
+        for (Object key : keys.subList(trainSize, size)) {
+            this.timeSeriesTest.addTimeValue(timeSeries.getTimeValue((int) key));
         }
-        for (Object key : keys.subList(validateIndex, size - 1)) {
-            this.timeSeriesValidate.add((int) key, timeSeries.getTimeValue((int) key));
-        }
+    }
+
+    /**
+     * Расчитать длину обучающего временного ряда.
+     * @param size длина временного ряда.
+     * @param testPercent процент тестовой выборки.
+     * @return размер обучающей выборки.
+     */
+    @Contract(pure = true)
+    private int trainSize(int size, int testPercent) {
+        return (int) (size * (1 - ((double)testPercent / 100)));
     }
 
     /**

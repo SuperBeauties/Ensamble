@@ -18,8 +18,8 @@ public class WeightedAverageEnsemble extends Ensemble {
      */
     Map<Model, Double> weightedModels;
 
-    public WeightedAverageEnsemble(TimeSeries timeSeries) {
-        super(timeSeries);
+    public WeightedAverageEnsemble(TimeSeries timeSeries, int testPercent) {
+        super(timeSeries, testPercent);
         weightedModels = new HashMap<Model, Double>();
     }
 
@@ -33,6 +33,7 @@ public class WeightedAverageEnsemble extends Ensemble {
             double weight = calculateWeight(modelMape.getValue(), sumMapes);
             weightedModels.put(modelMape.getKey(), weight);
         }
+        setFit();
     }
 
     /**

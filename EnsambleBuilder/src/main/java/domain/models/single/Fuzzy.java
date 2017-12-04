@@ -4,8 +4,8 @@ import domain.Model;
 import domain.TimeSeries;
 
 public class Fuzzy extends Model {
-    public Fuzzy(TimeSeries timeSeries, int order) {
-        super(timeSeries, order);
+    public Fuzzy(TimeSeries timeSeries, int order, int testPercent) {
+        super(timeSeries, order, testPercent);
     }
 
     public void fit() {
