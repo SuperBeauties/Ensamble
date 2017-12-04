@@ -10,6 +10,8 @@ import java.util.Map;
 public class TimeSeries {
     private final Map<Integer, Double> timeSeries;
 
+    private double maxValue = 0;
+
     public TimeSeries() {
         timeSeries = new HashMap<Integer, Double>();
     }
@@ -20,6 +22,7 @@ public class TimeSeries {
      * @param value значение.
      */
     public void addTimeValue(double value) {
+        maxValue = (value > maxValue) ? value : maxValue;
         timeSeries.put(timeSeries.size() + 1, value);
     }
 
@@ -30,6 +33,7 @@ public class TimeSeries {
      * @param value значение.
      */
     public void add(int t, double value) {
+        maxValue = (value > maxValue) ? value : maxValue;
         timeSeries.put(t, value);
     }
 
@@ -40,6 +44,15 @@ public class TimeSeries {
      */
     public Map<Integer, Double> getTimeSeries() {
         return timeSeries;
+    }
+
+    /**
+     * Получить максимальное значение временного ряда.
+     *
+     * @return максимальное значение временного ряда.
+     */
+    public double getMaxValue() {
+        return maxValue;
     }
 
     /**
@@ -59,6 +72,35 @@ public class TimeSeries {
      */
     public double getTimeValue(int t) {
         return timeSeries.get(t);
+    }
+
+    /**
+     * Нормализация временного ряда для дальнейшего использования.
+     */
+    public void normalize() {
+        for (Map.Entry<Integer, Double> entry : timeSeries.entrySet()) {
+            entry.setValue(entry.getValue() / maxValue);
+        }
+    }
+
+    /**
+     * Денормализация временного ряда.
+     */
+    public void denormalize() {
+        for (Map.Entry<Integer, Double> entry : timeSeries.entrySet()) {
+            entry.setValue(entry.getValue() * maxValue);
+        }
+    }
+
+    /**
+     * Денормализация временного ряда с использованием внешнего максимума.
+     *
+     * @param maxValue максимум.
+     */
+    public void denormalize(double maxValue) {
+        for (Map.Entry<Integer, Double> entry : timeSeries.entrySet()) {
+            entry.setValue(entry.getValue() * maxValue);
+        }
     }
 
     /**

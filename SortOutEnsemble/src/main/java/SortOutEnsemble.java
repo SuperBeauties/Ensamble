@@ -103,13 +103,12 @@ public class SortOutEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws NoEqualsTimeSeriesException    разные временные ряды в моделях.
      */
-    public void sortOut(List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException {
+    public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException {
         List<Model> empty = new ArrayList<>(0);
         List<Model> modelsArima = (!needArima) ? empty : fitedModels(Models.ARIMA, orderArima);
         List<Model> modelsNeural = (!needNeural) ? empty : fitedModels(Models.NEURAL, orderNeural);
         List<Model> modelsFuzzy = (!needFuzzy) ? empty : fitedModels(Models.FUZZY, orderFuzzy);
 
-        List<Model> allModels = new ArrayList<>();
         allModels.addAll(modelsArima);
         allModels.addAll(modelsNeural);
         allModels.addAll(modelsFuzzy);
@@ -117,6 +116,7 @@ public class SortOutEnsemble {
         createEnsembleLists(allModels, weighted, neural);
         selectEnsembles(weighted);
         selectEnsembles(neural);
+        selectModels(allModels);
     }
 
     /**
@@ -178,7 +178,7 @@ public class SortOutEnsemble {
             Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, TEST_PERSENT);
             Ensemble ensembleNeural = new NeuralEnsemble(timeSeries, TEST_PERSENT);
             createEnsemble(rowSortOut, allModels, ensembleWeighted, ensembleNeural);
-            if (ensembleWeighted != null && ensembleNeural != null) {
+            if (ensembleWeighted.getModels().size() > 1 && ensembleNeural.getModels().size() > 1) {
                 if (needWeightedEnsemble) {
                     ensembleWeighted.fit();
                     weighted.add(ensembleWeighted);
@@ -198,11 +198,13 @@ public class SortOutEnsemble {
      * @return таблица перебора моделей
      */
     private List<String> tableSortOut(int size) {
-        size = (int) Math.pow(2, size);
-        List<String> tableSortOut = new ArrayList<>(size);
-        for (int i = 1; i <= size; ++i) {
-            String rowSortOut = Integer.toBinaryString(i);
-            tableSortOut.add(rowSortOut);
+        int tableSize = (int) Math.pow(2, size);
+        System.out.println(size);
+        List<String> tableSortOut = new ArrayList<>(tableSize);
+        for (int i = 1; i <= tableSize - 1; ++i) {
+            String rowSortOut = "0000" + Integer.toBinaryString(i);
+            System.out.println(rowSortOut);
+            tableSortOut.add(rowSortOut.substring(rowSortOut.length() - size));
         }
         return tableSortOut;
     }
@@ -222,20 +224,14 @@ public class SortOutEnsemble {
     @Nullable
     private void createEnsemble(String row, List<Model> models, Ensemble weighted, Ensemble neural) throws NoEqualsTimeSeriesException, TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         int size = models.size();
-        int modelsCount = 0;
         for (int i = 0; i < row.length(); ++i) {
             if (row.charAt(i) == '1') {
-                Model model = models.get(size - i - 1);
-                if (!model.isOverFited(overFitedBorder)) {
-                    weighted.addModel(model);
-                    neural.addModel(model);
-                    ++modelsCount;
-                }
+                Model model = models.get(i);
+                //if (!model.isOverFited(overFitedBorder)) {
+                weighted.addModel(model);
+                neural.addModel(model);
+                //}
             }
-        }
-        if (modelsCount <= 1) {
-            weighted = null;
-            neural = null;
         }
     }
 
@@ -251,10 +247,41 @@ public class SortOutEnsemble {
         Iterator<Ensemble> ensembleIterator = ensembles.iterator();
         while (ensembleIterator.hasNext()) {
             Ensemble ensemble = ensembleIterator.next();
-            if (ensemble.getTestMape() > qualityBorder) {
+            if (isIncorrect(ensemble)) {
                 ensembleIterator.remove();
             }
         }
+    }
+
+    /**
+     * Выбор моделей, отвечающих требованиям качества.
+     *
+     * @param models список ансамблей.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     */
+    private void selectModels(List<Model> models) throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        Iterator<Model> modelIterator = models.iterator();
+        while (modelIterator.hasNext()) {
+            Model model = modelIterator.next();
+            if (isIncorrect(model)) {
+                modelIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Проверка модели на корректность.
+     *
+     * @param model модель.
+     * @return некорректность.
+     * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
+     * @throws ForecastNotFitedModelException модель не была обучена.
+     * @throws TimeSeriesSizeException        некорректная длина временных рядов.
+     */
+    private boolean isIncorrect(Model model) throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        return model.getTestMape() > qualityBorder || model.isOverFited(overFitedBorder);
     }
 
     enum Models {

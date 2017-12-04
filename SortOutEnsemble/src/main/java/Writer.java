@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
 
 public class Writer {
     private final static String dir = "output\\";
@@ -30,14 +29,15 @@ public class Writer {
      * @param name       название ряда.
      * @throws IOException при записи в файл.
      */
-    public void writeTs(TimeSeries timeSeries, String name) throws IOException {
+    public void writeTs(TimeSeries timeSeries, int order, String name) throws IOException {
         Path path = Paths.get(dir, tsFileName.replace("%n%", name));
         BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
         CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
 
-        for (int i = 1; i <= timeSeries.getSize(); ++i) {
+        for (int i = order + 1; i <= timeSeries.getSize() + order; ++i) {
             double value = timeSeries.getTimeValue(i);
             List<String> record = new ArrayList<>();
+            record.add(String.valueOf(i));
             record.add(String.valueOf(value).replace(".", ","));
             printer.printRecord(record);
         }
@@ -91,5 +91,8 @@ public class Writer {
             record.add(description);
             printer.printRecord(record);
         }
+
+        writer.flush();
+        writer.close();
     }
 }

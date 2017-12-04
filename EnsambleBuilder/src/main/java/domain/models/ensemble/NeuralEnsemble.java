@@ -22,14 +22,15 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.util.List;
 
 public class NeuralEnsemble extends Ensemble {
     private static final int SEED = 12345;
-    private static final int ITERATIONS = 1;
-    private static final int N_EPOCHS = 10;
+    private static final int ITERATIONS = 5;
+    private static final int N_EPOCHS = 1;
     private static final int BATCH_SIZE = 100;
     private static final double LEARNING_RATE = 0.01;
     private static final int NUM_OUTPUTS = 1;
@@ -38,13 +39,14 @@ public class NeuralEnsemble extends Ensemble {
 
     public NeuralEnsemble(TimeSeries timeSeries, int testPercent) {
         super(timeSeries, testPercent);
+    }
+
+    protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);
         net.init();
         net.setListeners(new ScoreIterationListener(1));
-    }
 
-    protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
         final DataSetIterator iterator = getTrainingData();
         for (int i = 0; i < N_EPOCHS; i++) {
             iterator.reset();
@@ -70,18 +72,19 @@ public class NeuralEnsemble extends Ensemble {
      * @return конфигурация нейронной сети.
      */
     private MultiLayerConfiguration getDeepDenseLayerNetworkConfiguration() {
-        final int numHiddenNodes = 15;
+        final int numHiddenNodes1 = 7;
+        final int numHiddenNodes2 = 5;
         return new NeuralNetConfiguration.Builder()
                 .seed(SEED)
                 .iterations(ITERATIONS)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(LEARNING_RATE)
                 .weightInit(WeightInit.XAVIER)
-                .updater(Updater.NESTEROVS)
-                .momentum(0.9)
+                .updater(new Nesterovs(0.9))
                 .list()
-                .layer(1, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes).activation(Activation.HARDTANH).build())
-                .layer(2, new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.SIGMOID).nIn(numHiddenNodes).nOut(NUM_OUTPUTS).build())
+                .layer(0, new DenseLayer.Builder().nIn(models.size()).nOut(numHiddenNodes1).activation(Activation.HARDTANH).build())
+                .layer(1, new DenseLayer.Builder().nIn(numHiddenNodes1).nOut(numHiddenNodes2).activation(Activation.HARDTANH).build())
+                .layer(2, new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.SIGMOID).nIn(numHiddenNodes2).nOut(NUM_OUTPUTS).build())
                 .pretrain(false)
                 .backprop(true)
                 .build();
