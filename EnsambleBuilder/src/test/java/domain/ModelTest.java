@@ -1,5 +1,6 @@
 package domain;
 
+import domain.exceptions.InvalidOrderException;
 import domain.models.single.Fuzzy;
 import org.apache.commons.math3.util.Precision;
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import static org.junit.Assert.*;
 public class ModelTest {
 
     @Test
-    public void ShouldCreateModelAndPartTimeSeries() {
+    public void ShouldCreateModelAndPartTimeSeries() throws InvalidOrderException {
         TimeSeries timeSeries = new TimeSeries();
         timeSeries.addTimeValue(1.0);
         timeSeries.addTimeValue(2.0);
@@ -22,7 +23,7 @@ public class ModelTest {
         timeSeries.addTimeValue(1.7);
         timeSeries.addTimeValue(1.5);
         timeSeries.addTimeValue(1.9);
-        Model model = new Fuzzy(timeSeries, 0, 20);
+        Model model = new Fuzzy(timeSeries, 3, 20);
         TimeSeries timeSeriesTrain = model.getTimeSeriesTrain();
         TimeSeries timeSeriesTest = model.getTimeSeriesTest();
 

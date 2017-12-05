@@ -2,10 +2,7 @@ import domain.Ensemble;
 import domain.Model;
 import domain.Quality;
 import domain.TimeSeries;
-import domain.exceptions.ForecastNotFitedModelException;
-import domain.exceptions.InvalidTemporaryValueException;
-import domain.exceptions.NoEqualsTimeSeriesException;
-import domain.exceptions.TimeSeriesSizeException;
+import domain.exceptions.*;
 import domain.models.ensemble.NeuralEnsemble;
 import domain.models.ensemble.WeightedAverageEnsemble;
 import domain.models.single.Arima;
@@ -68,7 +65,7 @@ public class EnsembleUtil {
      * @return ансабль.
      * @throws IOException при чтении файла.
      */
-    public Model read() throws IOException, InvalidDescriptionException, NoEqualsTimeSeriesException {
+    public Model read() throws IOException, InvalidDescriptionException, NoEqualsTimeSeriesException, InvalidOrderException {
         String description = reader.readDescription();
         description = description.replace("Тип ансамбля:", "");
         description = description.replace("Включает модели:", "");
@@ -190,7 +187,7 @@ public class EnsembleUtil {
      * @return модль.
      * @throws InvalidDescriptionException некорректное описание.
      */
-    private Model getModelFromDescription(String modelDescription) throws InvalidDescriptionException {
+    private Model getModelFromDescription(String modelDescription) throws InvalidDescriptionException, InvalidOrderException {
         Model model;
         modelDescription = modelDescription.replace(")", "");
         modelDescription = modelDescription.replace("(", "");

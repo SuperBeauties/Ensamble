@@ -1,10 +1,7 @@
 import domain.Ensemble;
 import domain.Model;
 import domain.TimeSeries;
-import domain.exceptions.ForecastNotFitedModelException;
-import domain.exceptions.InvalidTemporaryValueException;
-import domain.exceptions.NoEqualsTimeSeriesException;
-import domain.exceptions.TimeSeriesSizeException;
+import domain.exceptions.*;
 import domain.models.ensemble.NeuralEnsemble;
 import domain.models.ensemble.WeightedAverageEnsemble;
 import domain.models.single.Arima;
@@ -104,7 +101,7 @@ public class SortOutEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws NoEqualsTimeSeriesException    разные временные ряды в моделях.
      */
-    public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException, IOException {
+    public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException, IOException, InvalidOrderException {
         List<Model> empty = new ArrayList<>(0);
         List<Model> modelsArima = (!needArima) ? empty : fitedModels(Models.ARIMA, orderArima);
         List<Model> modelsNeural = (!needNeural) ? empty : fitedModels(Models.NEURAL, orderNeural);
@@ -129,7 +126,7 @@ public class SortOutEnsemble {
      * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      * @throws ForecastNotFitedModelException модель не была обучена.
      */
-    private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException {
+    private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException, InvalidOrderException {
         List<Model> models = new ArrayList<>(order);
         for (int i = 1; i <= order; ++i) {
             Model creation = createModel(model, i);
@@ -147,7 +144,7 @@ public class SortOutEnsemble {
      * @return модель.
      */
     @NotNull
-    private Model createModel(Models model, int order) {
+    private Model createModel(Models model, int order) throws InvalidOrderException {
         switch (model) {
             case ARIMA: {
                 return new Arima(timeSeries, order, TEST_PERSENT);
@@ -173,7 +170,7 @@ public class SortOutEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws NoEqualsTimeSeriesException    разные временные ряды в моделях.
      */
-    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException {
+    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException, InvalidOrderException {
         List<String> tableSortOut = tableSortOut(allModels.size());
         for (String rowSortOut : tableSortOut) {
             Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, TEST_PERSENT);

@@ -2,13 +2,14 @@ package domain.models.single;
 
 import domain.Model;
 import domain.TimeSeries;
+import domain.exceptions.InvalidOrderException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class NeuralTest {
     @Test
-    public  void ShouldCreate() {
+    public  void ShouldCreate() throws InvalidOrderException {
         TimeSeries timeSeries = new TimeSeries();
         timeSeries.addTimeValue(1.0);
         timeSeries.addTimeValue(2.0);

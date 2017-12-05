@@ -1,0 +1,2 @@
+input\ts.csv (Не удается найти указанный файл)
+[java.base/java.io.FileInputStream.open0(Native Method), java.base/java.io.FileInputStream.open(FileInputStream.java:196), java.base/java.io.FileInputStream.<init>(FileInputStream.java:139), java.base/java.io.FileReader.<init>(FileReader.java:72), Reader.read(Reader.java:66), Reader.readTimeSeries(Reader.java:24), Application.main(Application.java:22)]

@@ -1,4 +1,3 @@
-import domain.Ensemble;
 import domain.TimeSeries;
 
 import java.io.BufferedWriter;
@@ -14,10 +13,10 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 public class Writer {
-    private final static String dir = "output\\";
-    private final static String tsFileName = "ts%n%.csv";
-    private final static String paramsFileName = "params%n%.csv";
-    private final static String descriptionFileName = "description.csv";
+    private final static String DIR = "output\\";
+    private final static String TS_FILE_NAME = "ts%n%.csv";
+    private final static String PARAMS_FILE_NAME = "params%n%.csv";
+    private final static String EXCEPTION_FILE_NAME = "exception.csv";
 
     private static final Charset CHARSET = Charset.forName("windows-1251");
     private static final CSVFormat CSV_WRITER_FORMAT = CSVFormat.EXCEL.withDelimiter(';');
@@ -30,7 +29,7 @@ public class Writer {
      * @throws IOException при записи в файл.
      */
     public void writeTs(TimeSeries timeSeries, int order, String name) throws IOException {
-        Path path = Paths.get(dir, tsFileName.replace("%n%", name));
+        Path path = Paths.get(DIR, TS_FILE_NAME.replace("%n%", name));
         BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
         CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
 
@@ -55,7 +54,7 @@ public class Writer {
      * @throws IOException при записи в файл.
      */
     public void writeParams(double mapeTrain, double mapeTest, double sMape, String description, String name) throws IOException {
-        Path path = Paths.get(dir, paramsFileName.replace("%n%", name));
+        Path path = Paths.get(DIR, PARAMS_FILE_NAME.replace("%n%", name));
         BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
         CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
 
@@ -73,6 +72,29 @@ public class Writer {
 
         record = new ArrayList<>();
         record.add(description);
+        printer.printRecord(record);
+
+        writer.flush();
+        writer.close();
+    }
+
+    /**
+     * Запись исключения в файл.
+     *
+     * @param description описание.
+     * @param stackTrace  трасировка.
+     */
+    public void writeException(String description, String stackTrace) throws IOException {
+        Path path = Paths.get(DIR, EXCEPTION_FILE_NAME);
+        BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
+        CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
+
+        List<String> record = new ArrayList<>();
+        record.add(description);
+        printer.printRecord(record);
+
+        record = new ArrayList<>();
+        record.add(stackTrace);
         printer.printRecord(record);
 
         writer.flush();
