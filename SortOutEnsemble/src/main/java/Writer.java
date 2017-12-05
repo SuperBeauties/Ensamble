@@ -54,7 +54,7 @@ public class Writer {
      * @param name      название ряда.
      * @throws IOException при записи в файл.
      */
-    public void writeParams(double mapeTrain, double mapeTest, double sMape, String name) throws IOException {
+    public void writeParams(double mapeTrain, double mapeTest, double sMape, String description, String name) throws IOException {
         Path path = Paths.get(dir, paramsFileName.replace("%n%", name));
         BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
         CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
@@ -71,26 +71,9 @@ public class Writer {
         record.add(String.valueOf(sMape).replace(".", ","));
         printer.printRecord(record);
 
-        writer.flush();
-        writer.close();
-    }
-
-    /**
-     * Запись описаний ансамблей.
-     *
-     * @param descriptions описания ансамблей.
-     * @throws IOException при записи в файл.
-     */
-    public void writeDescription(List<String> descriptions) throws IOException {
-        Path path = Paths.get(dir, descriptionFileName);
-        BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
-        CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
-
-        for (String description : descriptions) {
-            List<String> record = new ArrayList<>();
-            record.add(description);
-            printer.printRecord(record);
-        }
+        record = new ArrayList<>();
+        record.add(description);
+        printer.printRecord(record);
 
         writer.flush();
         writer.close();

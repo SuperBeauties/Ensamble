@@ -4,6 +4,7 @@ import domain.Ensemble;
 import domain.Model;
 import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -37,7 +38,7 @@ public class NeuralEnsemble extends Ensemble {
 
     private MultiLayerNetwork net;
 
-    public NeuralEnsemble(TimeSeries timeSeries, int testPercent) {
+    public NeuralEnsemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
         super(timeSeries, testPercent);
     }
 

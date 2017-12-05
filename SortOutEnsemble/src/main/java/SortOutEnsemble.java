@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -103,7 +104,7 @@ public class SortOutEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws NoEqualsTimeSeriesException    разные временные ряды в моделях.
      */
-    public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException {
+    public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException, IOException {
         List<Model> empty = new ArrayList<>(0);
         List<Model> modelsArima = (!needArima) ? empty : fitedModels(Models.ARIMA, orderArima);
         List<Model> modelsNeural = (!needNeural) ? empty : fitedModels(Models.NEURAL, orderNeural);
@@ -128,7 +129,7 @@ public class SortOutEnsemble {
      * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      * @throws ForecastNotFitedModelException модель не была обучена.
      */
-    private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException {
+    private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException {
         List<Model> models = new ArrayList<>(order);
         for (int i = 1; i <= order; ++i) {
             Model creation = createModel(model, i);
@@ -172,7 +173,7 @@ public class SortOutEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws NoEqualsTimeSeriesException    разные временные ряды в моделях.
      */
-    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
+    private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException {
         List<String> tableSortOut = tableSortOut(allModels.size());
         for (String rowSortOut : tableSortOut) {
             Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, TEST_PERSENT);
@@ -202,7 +203,10 @@ public class SortOutEnsemble {
         System.out.println(size);
         List<String> tableSortOut = new ArrayList<>(tableSize);
         for (int i = 1; i <= tableSize - 1; ++i) {
-            String rowSortOut = "0000" + Integer.toBinaryString(i);
+            String rowSortOut = Integer.toBinaryString(i);
+            for(int k = 0; k < size; ++k) {
+                rowSortOut = "0" + rowSortOut;
+            }
             System.out.println(rowSortOut);
             tableSortOut.add(rowSortOut.substring(rowSortOut.length() - size));
         }

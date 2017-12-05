@@ -8,9 +8,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class Reader {
-    private static String dir = "input\\";
-    private static String tsFileName = "ts.csv";
-    private static String paramsFileName = "params.csv";
+    private final static String DIR = "input\\";
+    private final static String TS_FILE_NAME = "ts.csv";
+    private final static String PARAMS_FILE_NAME = "params.csv";
+    private final static String MODEL_FILE_NAME = "model.csv";
 
     /**
      * Чтение временного ряда.
@@ -19,7 +20,7 @@ public class Reader {
      * @throws IOException возникает при чтении файла.
      */
     public TimeSeries readTimeSeries() throws IOException {
-        File file = new File(dir, tsFileName);
+        File file = new File(DIR, TS_FILE_NAME);
         String inputString = read(file);
         String[] values = inputString.split(";");
         TimeSeries timeSeries = new TimeSeries();
@@ -38,9 +39,20 @@ public class Reader {
      * @throws IOException возникает при чтении файла.
      */
     public String[] readParams() throws IOException {
-        File file = new File(dir, paramsFileName);
+        File file = new File(DIR, PARAMS_FILE_NAME);
         String inputString = read(file);
         return inputString.split(";");
+    }
+
+    /**
+     * Чтение описания ансамбля.
+     *
+     * @return описание ансамбля.
+     * @throws IOException при чтении файла.
+     */
+    public String readDescription() throws IOException {
+        File file = new File(DIR, MODEL_FILE_NAME);
+        return read(file);
     }
 
     /**

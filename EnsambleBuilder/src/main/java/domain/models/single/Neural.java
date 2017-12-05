@@ -3,6 +3,7 @@ package domain.models.single;
 import domain.Model;
 import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -35,7 +36,7 @@ public class Neural extends Model {
 
     private MultiLayerNetwork net;
 
-    public Neural(TimeSeries timeSeries, int order, int testPercent) {
+    public Neural(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
         super(timeSeries, order, testPercent);
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);

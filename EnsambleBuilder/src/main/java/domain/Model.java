@@ -1,11 +1,14 @@
 package domain;
 
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.exceptions.TimeSeriesSizeException;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,11 @@ public abstract class Model {
     private boolean isFit;
 
 
-    public Model(TimeSeries timeSeries, int order, int testPercent) {
+    public Model(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
+        if(order < 1 || order >= timeSeries.getSize()) {
+            throw new InvalidOrderException();
+        }
+
         this.timeSeries = timeSeries;
         this.order = order;
 
@@ -55,7 +62,7 @@ public abstract class Model {
      * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
     public double getTrainMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
-        return mape(timeSeriesTrain);
+        return mape(timeSeriesTrain, 0);
     }
 
     /**
@@ -67,7 +74,7 @@ public abstract class Model {
      * @throws InvalidTemporaryValueException некорректна метка времени предсказываемого значения.
      */
     public double getTestMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
-        return mape(timeSeriesTest);
+        return mape(timeSeriesTest, timeSeriesTrain.getSize());
     }
 
     /**
@@ -92,7 +99,7 @@ public abstract class Model {
     /**
      * Обучить модель.
      */
-    public abstract void fit() throws InvalidTemporaryValueException, ForecastNotFitedModelException;
+    public abstract void fit() throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException;
 
     /**
      * Предсказать по обученной модели.
@@ -205,12 +212,12 @@ public abstract class Model {
      * @throws ForecastNotFitedModelException модель не была обучена.
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      */
-    private double mape(TimeSeries timeSeries) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
+    private double mape(TimeSeries timeSeries, int k) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesFact = new TimeSeries();
         TimeSeries timeSeriesCalc = new TimeSeries();
         for (int i = order + 1; i <= timeSeries.getSize(); ++i) {
             timeSeriesFact.add(i, timeSeries.getTimeValue(i));
-            timeSeriesCalc.add(i, forecast(i));
+            timeSeriesCalc.add(i, forecast(i + k));
         }
         return Quality.mape(timeSeriesFact, timeSeriesCalc);
     }

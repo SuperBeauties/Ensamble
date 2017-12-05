@@ -1,10 +1,12 @@
 package domain;
 
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.exceptions.NoEqualsTimeSeriesException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public abstract class Ensemble extends Model {
      */
     protected List<Model> models;
 
-    public Ensemble(TimeSeries timeSeries, int testPercent) {
+    public Ensemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
         super(timeSeries, 0, testPercent);
         models = new ArrayList<Model>();
     }
@@ -58,7 +60,7 @@ public abstract class Ensemble extends Model {
     /**
      * Обучить ансамблевую модель.
      */
-    public void fit() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
+    public void fit() throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException {
         for (Model model : models) {
             if (!model.isFit()) {
                 model.fit();

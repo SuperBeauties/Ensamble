@@ -4,7 +4,10 @@ import domain.Quality;
 import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
+import domain.exceptions.NoEqualsTimeSeriesException;
 import domain.exceptions.TimeSeriesSizeException;
+import domain.models.ensemble.NeuralEnsemble;
+import domain.models.ensemble.WeightedAverageEnsemble;
 import domain.models.single.Arima;
 import domain.models.single.Fuzzy;
 import domain.models.single.Neural;
@@ -13,22 +16,36 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WriteEnsemble {
+public class EnsembleUtil {
     private final TimeSeries timeSeries;
     private final List<Ensemble> weighted;
     private final List<Ensemble> neural;
-    private final List<String> description;
     private final Writer writer;
+    private final Reader reader;
     private final List<Model> allModels;
-    private int index = 0;
+    private final int testPercent;
+    private int index;
 
-    public WriteEnsemble(TimeSeries timeSeries, List<Ensemble> weighted, List<Ensemble> neural, List<Model> allModels) {
+    public EnsembleUtil(TimeSeries timeSeries, List<Ensemble> weighted, List<Ensemble> neural, List<Model> allModels, int start) {
         this.timeSeries = timeSeries;
         this.weighted = weighted;
         this.neural = neural;
         this.allModels = allModels;
-        this.description = new ArrayList<>();
-        this.writer = new Writer();
+        index = start;
+        testPercent = 0;
+        writer = new Writer();
+        reader = new Reader();
+    }
+
+    public EnsembleUtil(TimeSeries timeSeries, int testPercent) {
+        this.timeSeries = timeSeries;
+        this.testPercent = testPercent;
+        index = 0;
+        weighted = new ArrayList<>();
+        neural = new ArrayList<>();
+        allModels = new ArrayList<>();
+        writer = new Writer();
+        reader = new Reader();
     }
 
     /**
@@ -43,7 +60,43 @@ public class WriteEnsemble {
         write(allModels);
         write(weighted, "средневзвешенный");
         write(neural, "нейросетевой");
-        writer.writeDescription(description);
+    }
+
+    /**
+     * Чтение ансамбля.
+     *
+     * @return ансабль.
+     * @throws IOException при чтении файла.
+     */
+    public Model read() throws IOException, InvalidDescriptionException, NoEqualsTimeSeriesException {
+        String description = reader.readDescription();
+        description = description.replace("Тип ансамбля:", "");
+        description = description.replace("Включает модели:", "");
+        description = description.replace("\"", "");
+        description = description.replace(".", "");
+
+        Ensemble ensemble;
+        if (description.contains("автономная модель")) {
+            description = description.replace("автономная модель", "");
+            description = description.replace(";", "");
+            Model model = getModelFromDescription(description);
+            return model;
+        } else if (description.contains("средневзвешенный")) {
+            description = description.replace("средневзвешенный", "");
+            ensemble = new WeightedAverageEnsemble(timeSeries, testPercent);
+        } else if (description.contains("нейросетевой")) {
+            description = description.replace("нейросетевой", "");
+            ensemble = new NeuralEnsemble(timeSeries, testPercent);
+        } else {
+            throw new InvalidDescriptionException();
+        }
+        description = description.trim();
+        String[] modelDescriptions = description.split(";");
+        for (String modelDescription : modelDescriptions) {
+            Model model = getModelFromDescription(modelDescription);
+            ensemble.addModel(model);
+        }
+        return ensemble;
     }
 
     /**
@@ -58,13 +111,12 @@ public class WriteEnsemble {
      */
     private void write(List<Ensemble> ensembles, String type) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException {
         for (Ensemble ensemble : ensembles) {
-            write(ensemble);
             StringBuilder descriptionBuilder = new StringBuilder();
             descriptionBuilder.append("Тип ансамбля: " + type + ". Включает модели: ");
             for (Model model : ensemble.getModels()) {
                 descriptionBuilder.append(getModelDescription(model));
             }
-            description.add(descriptionBuilder.toString());
+            write(ensemble, descriptionBuilder.toString());
         }
     }
 
@@ -79,11 +131,10 @@ public class WriteEnsemble {
      */
     private void write(List<Model> models) throws ForecastNotFitedModelException, TimeSeriesSizeException, InvalidTemporaryValueException, IOException {
         for (Model model : models) {
-            write(model);
             StringBuilder descriptionBuilder = new StringBuilder();
             descriptionBuilder.append("Тип ансамбля: автономная модель.  Включает модели: ");
             descriptionBuilder.append(getModelDescription(model));
-            description.add(descriptionBuilder.toString());
+            write(model, descriptionBuilder.toString());
         }
     }
 
@@ -96,7 +147,7 @@ public class WriteEnsemble {
      * @throws TimeSeriesSizeException        некорректная длина временных рядов.
      * @throws IOException                    при записи в файл.
      */
-    private void write(Model model) throws IOException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
+    private void write(Model model, String description) throws IOException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesCalc = new TimeSeries();
         for (int i = model.getOrder() + 1; i <= timeSeries.getSize(); ++i) {
             timeSeriesCalc.add(i, model.forecast(i));
@@ -109,7 +160,8 @@ public class WriteEnsemble {
         double mapeTrain = model.getTrainMape();
         double mapeTest = model.getTestMape();
         double sMape = Quality.sMape(mapeTrain, mapeTest);
-        writer.writeParams(mapeTrain, mapeTest, sMape, name);
+
+        writer.writeParams(mapeTrain, mapeTest, sMape, description, name);
     }
 
     /**
@@ -129,5 +181,36 @@ public class WriteEnsemble {
         }
         descriptionBuilder.append(model.getOrder() + "); ");
         return descriptionBuilder;
+    }
+
+    /**
+     * Создать модель на основе текстового описания.
+     *
+     * @param modelDescription описание модели.
+     * @return модль.
+     * @throws InvalidDescriptionException некорректное описание.
+     */
+    private Model getModelFromDescription(String modelDescription) throws InvalidDescriptionException {
+        Model model;
+        modelDescription = modelDescription.replace(")", "");
+        modelDescription = modelDescription.replace("(", "");
+        modelDescription = modelDescription.replace("порядок", "");
+        modelDescription = modelDescription.replace(" ", "");
+        if (modelDescription.contains("МодельArima")) {
+            modelDescription = modelDescription.replace("МодельArima", "");
+            int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
+            model = new Arima(timeSeries, order, testPercent);
+        } else if (modelDescription.contains("Нечеткаямодель")) {
+            modelDescription = modelDescription.replace("Нечеткаямодель", "");
+            int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
+            model = new Fuzzy(timeSeries, order, testPercent);
+        } else if (modelDescription.contains("Нейросетеваямодель")) {
+            modelDescription = modelDescription.replace("Нейросетеваямодель", "");
+            int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
+            model = new Neural(timeSeries, order, testPercent);
+        } else {
+            throw new InvalidDescriptionException();
+        }
+        return model;
     }
 }

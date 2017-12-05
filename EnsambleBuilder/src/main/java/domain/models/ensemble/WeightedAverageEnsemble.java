@@ -4,6 +4,7 @@ import domain.Ensemble;
 import domain.Model;
 import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.Quality;
 
@@ -18,7 +19,7 @@ public class WeightedAverageEnsemble extends Ensemble {
      */
     Map<Model, Double> weightedModels;
 
-    public WeightedAverageEnsemble(TimeSeries timeSeries, int testPercent) {
+    public WeightedAverageEnsemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
         super(timeSeries, testPercent);
         weightedModels = new HashMap<Model, Double>();
     }

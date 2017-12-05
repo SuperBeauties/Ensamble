@@ -5,6 +5,8 @@ import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidTemporaryValueException;
 import domain.exceptions.NoEqualsTimeSeriesException;
 import domain.exceptions.TimeSeriesSizeException;
+import domain.models.ensemble.NeuralEnsemble;
+import domain.models.ensemble.WeightedAverageEnsemble;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,9 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Application {
-    public static void main(String[] args) throws IOException, TimeSeriesSizeException, NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException {
+    public static void main(String[] args) throws IOException, TimeSeriesSizeException, NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, InvalidDescriptionException {
         Reader reader = new Reader();
         TimeSeries timeSeries = reader.readTimeSeries();
+        timeSeries.normalize();
         String[] params = reader.readParams();
         if (params[10].equals("Test")) {
             List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
@@ -23,7 +26,6 @@ public class Application {
             for (Object key : keys.subList(0, trainSize)) {
                 timeSeriesProcess.addTimeValue(timeSeries.getTimeValue((int) key));
             }
-            timeSeriesProcess.normalize();
 
             SortOutEnsemble sortOut = new SortOutEnsemble(
                     timeSeriesProcess,
@@ -43,7 +45,25 @@ public class Application {
             List<Ensemble> neural = new ArrayList<>();
             sortOut.sortOut(allModels, weighted, neural);
 
-            WriteEnsemble writeEnsemble = new WriteEnsemble(timeSeriesProcess, weighted, neural, allModels);
+            EnsembleUtil writeEnsemble = new EnsembleUtil(timeSeries, weighted, neural, allModels, 0);
+            writeEnsemble.write();
+        } else {
+            EnsembleUtil readEnsemble = new EnsembleUtil(timeSeries, 10);
+            Model model = readEnsemble.read();
+            model.fit();
+
+            List<Model> allModels = new ArrayList<>();
+            List<Ensemble> weighted = new ArrayList<>();
+            List<Ensemble> neural = new ArrayList<>();
+
+            if(model instanceof WeightedAverageEnsemble) {
+                weighted.add((Ensemble) model);
+            } else if(model instanceof NeuralEnsemble) {
+                neural.add((Ensemble) model);
+            } else {
+                allModels.add(model);
+            }
+            EnsembleUtil writeEnsemble = new EnsembleUtil(timeSeries, weighted, neural, allModels, -1);
             writeEnsemble.write();
         }
 

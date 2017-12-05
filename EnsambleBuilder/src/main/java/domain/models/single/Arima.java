@@ -6,6 +6,7 @@ import com.workday.insights.timeseries.arima.struct.ArimaParams;
 import domain.Model;
 import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
 import org.jetbrains.annotations.NotNull;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -21,7 +22,7 @@ public class Arima extends Model {
     private static final int Q = 0;
     private static final int m = 0;
 
-    public Arima(TimeSeries timeSeries, int order, int testPercent) {
+    public Arima(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
         super(timeSeries, order, testPercent);
         p = order;
     }
