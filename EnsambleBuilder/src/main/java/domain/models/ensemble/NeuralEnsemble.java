@@ -26,7 +26,9 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class NeuralEnsemble extends Ensemble {
     private static final int SEED = 12345;
@@ -38,8 +40,8 @@ public class NeuralEnsemble extends Ensemble {
 
     private MultiLayerNetwork net;
 
-    public NeuralEnsemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
-        super(timeSeries, testPercent);
+    public NeuralEnsemble(TimeSeries timeSeries, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        super(timeSeries, forecastCount, trainPercent, testPercent);
     }
 
     protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
@@ -53,6 +55,7 @@ public class NeuralEnsemble extends Ensemble {
             iterator.reset();
             net.fit(iterator);
         }
+        predict();
         setFit();
     }
 
@@ -65,6 +68,24 @@ public class NeuralEnsemble extends Ensemble {
         }
         INDArray res = net.output(x, false);
         return res.getDouble(0);
+    }
+
+    /**
+     * Расчет прогноза заданной длины.
+     */
+    private void predict() {
+        forecast = new double[forecastCount];
+        for (int i = 0; i < forecastCount; ++i) {
+            INDArray x = Nd4j.create(1, models.size());
+            for (int j = 0; j < models.size(); ++j) {
+                Model model = models.get(j);
+                x.putScalar(new int[]{0, j}, model.getForecast()[i]);
+                System.out.println("Neural");
+                System.out.println(model.getForecast()[i]);
+            }
+            forecast[i] = net.output(x, false).getDouble(0);
+        }
+        System.out.println(Arrays.toString(forecast));
     }
 
     /**

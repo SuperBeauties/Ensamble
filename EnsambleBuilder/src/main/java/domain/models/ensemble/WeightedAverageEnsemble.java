@@ -19,8 +19,8 @@ public class WeightedAverageEnsemble extends Ensemble {
      */
     Map<Model, Double> weightedModels;
 
-    public WeightedAverageEnsemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
-        super(timeSeries, testPercent);
+    public WeightedAverageEnsemble(TimeSeries timeSeries, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        super(timeSeries, forecastCount, trainPercent, testPercent);
         weightedModels = new HashMap<Model, Double>();
     }
 
@@ -34,6 +34,7 @@ public class WeightedAverageEnsemble extends Ensemble {
             double weight = calculateWeight(modelMape.getValue(), sumMapes);
             weightedModels.put(modelMape.getKey(), weight);
         }
+        predict();
         setFit();
     }
 
@@ -50,6 +51,20 @@ public class WeightedAverageEnsemble extends Ensemble {
             weightedAverage += weightedModel.getKey().forecast(t) * weightedModel.getValue();
         }
         return weightedAverage;
+    }
+
+    /**
+     * Расчет прогноза заданной длины.
+     */
+    private void predict() {
+        forecast = new double[forecastCount];
+        for (int i = 0; i < forecastCount; ++i) {
+            double weightedAverage = 0;
+            for (Map.Entry<Model, Double> weightedModel : weightedModels.entrySet()) {
+                weightedAverage += weightedModel.getKey().getForecast()[i] * weightedModel.getValue();
+            }
+            forecast[i] = weightedAverage;
+        }
     }
 
     /**

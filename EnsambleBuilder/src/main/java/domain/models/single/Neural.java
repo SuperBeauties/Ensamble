@@ -26,6 +26,8 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
+import java.util.Arrays;
+
 public class Neural extends Model {
     private static final int SEED = 12345;
     private static final int ITERATIONS = 5;
@@ -36,20 +38,21 @@ public class Neural extends Model {
 
     private MultiLayerNetwork net;
 
-    public Neural(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
-        super(timeSeries, order, testPercent);
+    public Neural(TimeSeries timeSeries, int order, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        super(timeSeries, order, forecastCount, trainPercent, testPercent);
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);
         net.init();
         net.setListeners(new ScoreIterationListener(1));
     }
 
-    public void fit()  {
+    public void fit() {
         final DataSetIterator iterator = getTrainingData();
         for (int i = 0; i < N_EPOCHS; i++) {
             iterator.reset();
             net.fit(iterator);
         }
+        predict();
         setFit();
     }
 
@@ -57,10 +60,30 @@ public class Neural extends Model {
         EnableForForecasting(t);
         INDArray x = Nd4j.create(1, order);
         for (int i = 0; i < order; i++) {
-            x.putScalar(new int[]{0, i},timeSeries.getTimeValue(t + i - order));
+            x.putScalar(new int[]{0, i}, timeSeries.getTimeValue(t + i - order));
         }
         INDArray res = net.output(x, false);
         return res.getDouble(0);
+    }
+
+    /**
+     * Расчет прогноза заданной длины.
+     */
+    private void predict() {
+        forecast = new double[forecastCount];
+        for (int i = 0; i < forecastCount; ++i) {
+            INDArray x = Nd4j.create(1, order);
+            for (int j = 0; j < order; j++) {
+                int timeValue = (timeSeries.getSize() + 1) + j - order;
+                if (timeValue < timeSeries.getSize() + 1) {
+                    x.putScalar(new int[]{0, j}, timeSeries.getTimeValue(timeValue));
+                } else {
+                    x.putScalar(new int[]{0, j}, forecast[i + j - order]);
+                }
+            }
+            forecast[i] = net.output(x, false).getDouble(0);
+        }
+        System.out.println(Arrays.toString(forecast));
     }
 
     /**
@@ -91,13 +114,13 @@ public class Neural extends Model {
      * @return обучающая выборка.
      */
     @NotNull
-    private DataSetIterator getTrainingData()  {
+    private DataSetIterator getTrainingData() {
         int size = timeSeriesTrain.getSize() - order;
         INDArray x = Nd4j.create(size, order);
         INDArray y = Nd4j.create(size, NUM_OUTPUTS);
         int j = 0;
         for (int t = order + 1; t <= timeSeriesTrain.getSize(); ++t) {
-            for(int i = 0; i < order; ++i) {
+            for (int i = 0; i < order; ++i) {
                 x.putScalar(new int[]{j, i}, timeSeriesTrain.getTimeValue(i + j + 1));
             }
 

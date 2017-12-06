@@ -20,7 +20,9 @@ public class EnsembleUtil {
     private final Writer writer;
     private final Reader reader;
     private final List<Model> allModels;
+    private final int trainPercent;
     private final int testPercent;
+    private final int forecastCount;
     private int index;
 
     public EnsembleUtil(TimeSeries timeSeries, List<Ensemble> weighted, List<Ensemble> neural, List<Model> allModels, int start) {
@@ -29,14 +31,18 @@ public class EnsembleUtil {
         this.neural = neural;
         this.allModels = allModels;
         index = start;
+        forecastCount = 0;
         testPercent = 0;
+        trainPercent = 0;
         writer = new Writer();
         reader = new Reader();
     }
 
-    public EnsembleUtil(TimeSeries timeSeries, int testPercent) {
+    public EnsembleUtil(TimeSeries timeSeries, int forecastCount, int trainPercent, int testPercent) {
         this.timeSeries = timeSeries;
         this.testPercent = testPercent;
+        this.trainPercent = trainPercent;
+        this.forecastCount = forecastCount;
         index = 0;
         weighted = new ArrayList<>();
         neural = new ArrayList<>();
@@ -80,10 +86,10 @@ public class EnsembleUtil {
             return model;
         } else if (description.contains("средневзвешенный")) {
             description = description.replace("средневзвешенный", "");
-            ensemble = new WeightedAverageEnsemble(timeSeries, testPercent);
+            ensemble = new WeightedAverageEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
         } else if (description.contains("нейросетевой")) {
             description = description.replace("нейросетевой", "");
-            ensemble = new NeuralEnsemble(timeSeries, testPercent);
+            ensemble = new NeuralEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
         } else {
             throw new InvalidDescriptionException();
         }
@@ -146,8 +152,13 @@ public class EnsembleUtil {
      */
     private void write(Model model, String description) throws IOException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesCalc = new TimeSeries();
-        for (int i = model.getOrder() + 1; i <= timeSeries.getSize(); ++i) {
+        int i;
+        for (i = model.getOrder() + 1; i <= timeSeries.getSize(); ++i) {
             timeSeriesCalc.add(i, model.forecast(i));
+        }
+        for (double forecast : model.getForecast()) {
+            timeSeriesCalc.add(i, forecast);
+            ++i;
         }
         timeSeriesCalc.denormalize(timeSeries.getMaxValue());
 
@@ -196,15 +207,15 @@ public class EnsembleUtil {
         if (modelDescription.contains("МодельArima")) {
             modelDescription = modelDescription.replace("МодельArima", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
-            model = new Arima(timeSeries, order, testPercent);
+            model = new Arima(timeSeries, order, forecastCount, trainPercent, testPercent);
         } else if (modelDescription.contains("Нечеткаямодель")) {
             modelDescription = modelDescription.replace("Нечеткаямодель", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
-            model = new Fuzzy(timeSeries, order, testPercent);
+            model = new Fuzzy(timeSeries, order, forecastCount, trainPercent, testPercent);
         } else if (modelDescription.contains("Нейросетеваямодель")) {
             modelDescription = modelDescription.replace("Нейросетеваямодель", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
-            model = new Neural(timeSeries, order, testPercent);
+            model = new Neural(timeSeries, order, forecastCount, trainPercent, testPercent);
         } else {
             throw new InvalidDescriptionException();
         }

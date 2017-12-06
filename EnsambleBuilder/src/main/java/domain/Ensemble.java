@@ -19,8 +19,8 @@ public abstract class Ensemble extends Model {
      */
     protected List<Model> models;
 
-    public Ensemble(TimeSeries timeSeries, int testPercent) throws InvalidOrderException {
-        super(timeSeries, 0, testPercent);
+    public Ensemble(TimeSeries timeSeries, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        super(timeSeries, 1, forecastCount, trainPercent, testPercent);
         models = new ArrayList<Model>();
     }
 

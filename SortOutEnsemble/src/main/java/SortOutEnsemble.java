@@ -63,7 +63,13 @@ public class SortOutEnsemble {
      */
     private final boolean needWeightedEnsemble;
 
-    private final static int TEST_PERSENT = 22;
+    /**
+     * Горизонт прогноза.
+     */
+    private final int forecastCount;
+
+    private final static int TRAIN_PERSENT = 70;
+    private final static int TEST_PERSENT = 20;
 
     public SortOutEnsemble(
             TimeSeries timeSeries,
@@ -76,7 +82,8 @@ public class SortOutEnsemble {
             int orderNeural,
             int orderFuzzy,
             boolean needNeuralEnsemble,
-            boolean needWightedEnsemble) {
+            boolean needWightedEnsemble,
+            int forecastCount) {
 
         this.timeSeries = timeSeries;
         this.orderArima = orderArima;
@@ -89,6 +96,7 @@ public class SortOutEnsemble {
         this.needFuzzy = needFuzzy;
         this.needNeuralEnsemble = needNeuralEnsemble;
         this.needWeightedEnsemble = needWightedEnsemble;
+        this.forecastCount = forecastCount;
     }
 
     /**
@@ -147,13 +155,13 @@ public class SortOutEnsemble {
     private Model createModel(Models model, int order) throws InvalidOrderException {
         switch (model) {
             case ARIMA: {
-                return new Arima(timeSeries, order, TEST_PERSENT);
+                return new Arima(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
             }
             case NEURAL: {
-                return new Neural(timeSeries, order, TEST_PERSENT);
+                return new Neural(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
             }
             case FUZZY: {
-                return new Fuzzy(timeSeries, order, TEST_PERSENT);
+                return new Fuzzy(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
             }
         }
         return null;
@@ -173,8 +181,8 @@ public class SortOutEnsemble {
     private void createEnsembleLists(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws NoEqualsTimeSeriesException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException, InvalidOrderException {
         List<String> tableSortOut = tableSortOut(allModels.size());
         for (String rowSortOut : tableSortOut) {
-            Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, TEST_PERSENT);
-            Ensemble ensembleNeural = new NeuralEnsemble(timeSeries, TEST_PERSENT);
+            Ensemble ensembleWeighted = new WeightedAverageEnsemble(timeSeries, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
+            Ensemble ensembleNeural = new NeuralEnsemble(timeSeries, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
             createEnsemble(rowSortOut, allModels, ensembleWeighted, ensembleNeural);
             if (ensembleWeighted.getModels().size() > 1 && ensembleNeural.getModels().size() > 1) {
                 if (needWeightedEnsemble) {

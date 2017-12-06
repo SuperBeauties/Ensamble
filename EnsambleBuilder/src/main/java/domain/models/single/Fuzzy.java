@@ -21,13 +21,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Fuzzy extends Model {
     private Stub stub;
 
-    public Fuzzy(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
-        super(timeSeries, order, testPercent);
+    public Fuzzy(TimeSeries timeSeries, int order, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        super(timeSeries, order, forecastCount, trainPercent, testPercent);
     }
 
     public void fit() throws IOException {
@@ -50,15 +51,24 @@ public class Fuzzy extends Model {
 
         Gson gson = new GsonBuilder().create();
         stub = gson.fromJson(output, Stub.class);
-        System.out.println(output);
-        System.out.println("n " + stub.getROW().size());
+        predict();
         setFit();
     }
 
     public double forecast(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
         EnableForForecasting(t);
-        System.out.println("t " + t);
         return stub.getROW().get(t - 1).getY();
+    }
+
+    /**
+     * Расчет прогноза заданной длины.
+     */
+    private void predict() {
+        forecast = new double[forecastCount];
+        for(int i = 0; i < forecastCount; ++i) {
+            forecast[i] = stub.getROW().get(timeSeries.getSize() + i - 1).getY();
+        }
+        System.out.println(Arrays.toString(forecast));
     }
 
     /**
@@ -71,8 +81,8 @@ public class Fuzzy extends Model {
         Stub stub = new Stub();
         stub.setName("нечеткий");
         stub.setOrder(order);
-        stub.setActualCount(timeSeriesTest.getSize());
-        stub.setForecastCount(1);
+        stub.setActualCount(timeSeries.getSize() - timeSeriesTrain.getSize());
+        stub.setForecastCount(forecastCount);
 
         List<TRPoint> collection = new ArrayList<>();
         for (int i = 1; i <= timeSeries.getSize(); ++i) {

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Contract;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,16 @@ public abstract class Model {
     protected TimeSeries timeSeriesTest;
 
     /**
+     * Горизонт прогноза.
+     */
+    protected int forecastCount;
+
+    /**
+     * Прогноз.
+     */
+    protected double[] forecast;
+
+    /**
      * Порядок модели.
      */
     protected int order;
@@ -40,17 +49,18 @@ public abstract class Model {
     private boolean isFit;
 
 
-    public Model(TimeSeries timeSeries, int order, int testPercent) throws InvalidOrderException {
-        if(order < 1 || order >= timeSeries.getSize()) {
+    public Model(TimeSeries timeSeries, int order, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
+        if (order < 1 || order >= timeSeries.getSize()) {
             throw new InvalidOrderException();
         }
 
         this.timeSeries = timeSeries;
         this.order = order;
+        this.forecastCount = forecastCount;
 
         this.timeSeriesTrain = new TimeSeries();
         this.timeSeriesTest = new TimeSeries();
-        partTimeSeries(testPercent);
+        partTimeSeries(trainPercent, testPercent);
     }
 
     /**
@@ -75,6 +85,15 @@ public abstract class Model {
      */
     public double getTestMape() throws TimeSeriesSizeException, ForecastNotFitedModelException, InvalidTemporaryValueException {
         return mape(timeSeriesTest, timeSeriesTrain.getSize());
+    }
+
+    /**
+     * Получить прогноз.
+     *
+     * @return прогноз.
+     */
+    public double[] getForecast() {
+        return forecast;
     }
 
     /**
@@ -180,27 +199,30 @@ public abstract class Model {
     /**
      * Поделить временной ряд.
      */
-    private void partTimeSeries(int testPercent) {
+    private void partTimeSeries(int trainPercent, int testPercent) {
         List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
         int size = keys.size();
-        int trainSize = trainSize(size, testPercent);
-        for (Object key : keys.subList(0, trainSize)) {
+        int trainSize = partSize(size, trainPercent);
+        int testSize = partSize(size, testPercent);
+        int start = size - (trainSize + testSize);
+        for (Object key : keys.subList(start, trainSize + start)) {
             this.timeSeriesTrain.addTimeValue(timeSeries.getTimeValue((int) key));
         }
-        for (Object key : keys.subList(trainSize, size)) {
+        for (Object key : keys.subList(trainSize + start, size)) {
             this.timeSeriesTest.addTimeValue(timeSeries.getTimeValue((int) key));
         }
     }
 
     /**
      * Расчитать длину обучающего временного ряда.
-     * @param size длина временного ряда.
-     * @param testPercent процент тестовой выборки.
+     *
+     * @param size    длина временного ряда.
+     * @param percent процент тестовой выборки.
      * @return размер обучающей выборки.
      */
     @Contract(pure = true)
-    private int trainSize(int size, int testPercent) {
-        return (int) (size * (1 - ((double)testPercent / 100)));
+    private int partSize(int size, int percent) {
+        return (int) (size * ((double) percent / 100));
     }
 
     /**

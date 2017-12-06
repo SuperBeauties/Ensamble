@@ -1,34 +1,46 @@
 package domain.models.single;
 
-import com.workday.insights.timeseries.arima.ArimaSolver;
 import com.workday.insights.timeseries.arima.struct.ArimaModel;
-import com.workday.insights.timeseries.arima.struct.ArimaParams;
+import domain.Model;
+import domain.TimeSeries;
+import domain.exceptions.ForecastNotFitedModelException;
+import domain.exceptions.InvalidOrderException;
+import domain.exceptions.InvalidTemporaryValueException;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 public class ArimaTest {
     @Test
-    public void ShouldForecastByArima() {
-        final int p = 2;
-        final int d = 1;
-        final int q = 0;
-        final int P = 0;
-        final int D = 0;
-        final int Q = 0;
-        final int m = 0;
-        final ArimaParams paramsForecast = new ArimaParams(p, d, q, P, D, Q, m);
-        final ArimaParams paramsXValidation = new ArimaParams(p, d, q, P, D, Q, m);
-        double[] data = new double[] {576, 559, 732, 836, 861, 580, 816, 679, 1001, 652, 483, 768, 555};
-        // estimate ARIMA model parameters for forecasting
-        final ArimaModel fittedModel = ArimaSolver.estimateARIMA(
-                paramsForecast, data, data.length, data.length + 1);
-        System.out.println(Arrays.toString(fittedModel.getParams().getCurrentARCoefficients()));
-        System.out.println(Arrays.toString(fittedModel.getParams().getCurrentMACoefficients()));
-        System.out.println(Arrays.toString(fittedModel.forecast(5).getForecast()));
-        System.out.println(fittedModel.getParams().forecastOnePointARMA(new double[] {576, 559}, new double[0], 2) * -1);
+    public void ShouldPredict() throws InvalidOrderException, IOException, ForecastNotFitedModelException, InvalidTemporaryValueException {
+        TimeSeries timeSeries = new TimeSeries();
+        timeSeries.addTimeValue(0.1);
+        timeSeries.addTimeValue(0.1);
+        timeSeries.addTimeValue(0.2);
+        timeSeries.addTimeValue(0.3);
+        timeSeries.addTimeValue(0.3);
+        timeSeries.addTimeValue(0.3);
+        timeSeries.addTimeValue(0.4);
+        timeSeries.addTimeValue(0.4);
+        timeSeries.addTimeValue(0.4);
+        timeSeries.addTimeValue(0.4);
+        timeSeries.addTimeValue(0.5);
+        timeSeries.addTimeValue(0.5);
+        timeSeries.addTimeValue(0.5);
+        timeSeries.addTimeValue(0.5);
+        timeSeries.addTimeValue(0.6);
+        timeSeries.addTimeValue(0.6);
+        timeSeries.addTimeValue(0.7);
+        timeSeries.addTimeValue(0.8);
+        timeSeries.addTimeValue(0.8);
+        timeSeries.addTimeValue(0.8);
+        timeSeries.addTimeValue(0.6);
+        timeSeries.addTimeValue(0.9);
+        timeSeries.addTimeValue(0.7);
+        Model arima = new Arima(timeSeries, 1, 9, 90, 10);
+        arima.fit();
     }
+
 }

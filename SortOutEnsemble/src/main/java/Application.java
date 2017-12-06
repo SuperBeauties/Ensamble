@@ -29,16 +29,16 @@ public class Application {
             (new Writer()).writeException(e.getMessage(), Arrays.toString(e.getStackTrace()));
             return;
         }
-        if (params[10].equals("Test")) {
-            List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
-            int trainSize = (int) (keys.size() * 0.9);
-            TimeSeries timeSeriesProcess = new TimeSeries();
-            for (Object key : keys.subList(0, trainSize)) {
-                timeSeriesProcess.addTimeValue(timeSeries.getTimeValue((int) key));
-            }
+        if (params[11].equals("Test")) {
+//            List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
+//            int trainSize = (int) (keys.size() * 0.9);
+//            TimeSeries timeSeriesProcess = new TimeSeries();
+//            for (Object key : keys.subList(0, trainSize)) {
+//                timeSeriesProcess.addTimeValue(timeSeries.getTimeValue((int) key));
+//            }
 
             SortOutEnsemble sortOut = new SortOutEnsemble(
-                    timeSeriesProcess,
+                    timeSeries,
                     (params[0].equals("1")) ? true : false,
                     (params[1].equals("1")) ? true : false,
                     (params[2].equals("1")) ? true : false,
@@ -48,7 +48,8 @@ public class Application {
                     Integer.parseInt(params[6]),
                     Integer.parseInt(params[7]),
                     (params[8].equals("1")) ? true : false,
-                    (params[9].equals("1")) ? true : false);
+                    (params[9].equals("1")) ? true : false,
+                    Integer.parseInt(params[10]));
 
             List<Model> allModels = new ArrayList<>();
             List<Ensemble> weighted = new ArrayList<>();
@@ -92,7 +93,7 @@ public class Application {
                 return;
             }
         } else {
-            EnsembleUtil readEnsemble = new EnsembleUtil(timeSeries, 10);
+            EnsembleUtil readEnsemble = new EnsembleUtil(timeSeries, Integer.parseInt(params[10]),90, 10);
             Model model = null;
             try {
                 model = readEnsemble.read();
