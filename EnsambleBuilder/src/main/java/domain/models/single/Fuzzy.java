@@ -64,6 +64,8 @@ public class Fuzzy extends Model {
      * Расчет прогноза заданной длины.
      */
     private void predict() {
+        Gson gson = new GsonBuilder().create();
+        System.out.println(gson.toJson(stub));
         forecast = new double[forecastCount];
         for(int i = 0; i < forecastCount; ++i) {
             forecast[i] = stub.getROW().get(timeSeries.getSize() + i - 1).getY();

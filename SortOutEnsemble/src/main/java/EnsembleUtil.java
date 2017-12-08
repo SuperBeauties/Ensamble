@@ -153,7 +153,7 @@ public class EnsembleUtil {
     private void write(Model model, String description) throws IOException, InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesCalc = new TimeSeries();
         int i;
-        for (i = model.getOrder() + 1; i <= timeSeries.getSize(); ++i) {
+        for (i = 1; i <= timeSeries.getSize(); ++i) {
             timeSeriesCalc.add(i, model.forecast(i));
         }
         for (double forecast : model.getForecast()) {
@@ -181,11 +181,15 @@ public class EnsembleUtil {
     private StringBuilder getModelDescription(Model model) {
         StringBuilder descriptionBuilder = new StringBuilder();
         if (model instanceof Arima) {
-            descriptionBuilder.append("Модель Arima (порядок ");
+            descriptionBuilder.append("Arima( ");
+            descriptionBuilder.append(model.getOrder() + ",");
+            descriptionBuilder.append(((Arima) model).getDiff() + ",");
+            descriptionBuilder.append(((Arima) model).getErrOrder() + "); ");
+            return descriptionBuilder;
         } else if (model instanceof Neural) {
-            descriptionBuilder.append("Нейросетевая модель (порядок ");
+            descriptionBuilder.append("ANN( ");
         } else if (model instanceof Fuzzy) {
-            descriptionBuilder.append("Нечеткая модель (порядок ");
+            descriptionBuilder.append("S( ");
         }
         descriptionBuilder.append(model.getOrder() + "); ");
         return descriptionBuilder;
@@ -202,18 +206,20 @@ public class EnsembleUtil {
         Model model;
         modelDescription = modelDescription.replace(")", "");
         modelDescription = modelDescription.replace("(", "");
-        modelDescription = modelDescription.replace("порядок", "");
         modelDescription = modelDescription.replace(" ", "");
-        if (modelDescription.contains("МодельArima")) {
-            modelDescription = modelDescription.replace("МодельArima", "");
-            int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
-            model = new Arima(timeSeries, order, forecastCount, trainPercent, testPercent);
-        } else if (modelDescription.contains("Нечеткаямодель")) {
-            modelDescription = modelDescription.replace("Нечеткаямодель", "");
+        if (modelDescription.contains("Arima")) {
+            modelDescription = modelDescription.replace("Arima", "");
+            String[] orders = modelDescription.split(",");
+            int order = Integer.parseInt(orders[0].replaceAll("[^0-9]", ""));
+            int diff = Integer.parseInt(orders[1].replaceAll("[^0-9]", ""));
+            int errOrder = Integer.parseInt(orders[2].replaceAll("[^0-9]", ""));
+            model = new Arima(timeSeries, order, forecastCount, trainPercent, testPercent, diff, errOrder);
+        } else if (modelDescription.contains("S")) {
+            modelDescription = modelDescription.replace("S", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
             model = new Fuzzy(timeSeries, order, forecastCount, trainPercent, testPercent);
-        } else if (modelDescription.contains("Нейросетеваямодель")) {
-            modelDescription = modelDescription.replace("Нейросетеваямодель", "");
+        } else if (modelDescription.contains("ANN")) {
+            modelDescription = modelDescription.replace("ANN", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));
             model = new Neural(timeSeries, order, forecastCount, trainPercent, testPercent);
         } else {

@@ -27,30 +27,29 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.alfabank.otr.identification.application.Application</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>Application</mainClass>
                         </manifest>
-                        <manifestEntries>
-                            <Class-Path>.</Class-Path>
-                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>ru.alfabank.otr.identification.application.Application</mainClass>
+                            <mainClass>Application</mainClass>
                         </manifest>
-                        <manifestEntries>
-                            <Class-Path>.</Class-Path>
-                        </manifestEntries>
                     </archive>
+                    <excludes>
+                        <exclude>logback.xml</exclude>
+                    </excludes>
                 </configuration>
+                <version>3.0.2</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

@@ -50,7 +50,7 @@ public abstract class Model {
 
 
     public Model(TimeSeries timeSeries, int order, int forecastCount, int trainPercent, int testPercent) throws InvalidOrderException {
-        if (order < 1 || order >= timeSeries.getSize()) {
+        if (order >= timeSeries.getSize()) {
             throw new InvalidOrderException();
         }
 
@@ -191,7 +191,7 @@ public abstract class Model {
             throw new ForecastNotFitedModelException();
         }
 
-        if (t <= order || t > timeSeries.getSize() + 1) {
+        if (t > timeSeries.getSize() + 1) {
             throw new InvalidTemporaryValueException();
         }
     }
@@ -204,11 +204,11 @@ public abstract class Model {
         int size = keys.size();
         int trainSize = partSize(size, trainPercent);
         int testSize = partSize(size, testPercent);
-        int start = size - (trainSize + testSize);
-        for (Object key : keys.subList(start, trainSize + start)) {
+        int end = trainSize + testSize;
+        for (Object key : keys.subList(0, trainSize)) {
             this.timeSeriesTrain.addTimeValue(timeSeries.getTimeValue((int) key));
         }
-        for (Object key : keys.subList(trainSize + start, size)) {
+        for (Object key : keys.subList(trainSize, end)) {
             this.timeSeriesTest.addTimeValue(timeSeries.getTimeValue((int) key));
         }
     }
@@ -237,7 +237,7 @@ public abstract class Model {
     private double mape(TimeSeries timeSeries, int k) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException {
         TimeSeries timeSeriesFact = new TimeSeries();
         TimeSeries timeSeriesCalc = new TimeSeries();
-        for (int i = order + 1; i <= timeSeries.getSize(); ++i) {
+        for (int i = 1; i <= timeSeries.getSize(); ++i) {
             timeSeriesFact.add(i, timeSeries.getTimeValue(i));
             timeSeriesCalc.add(i, forecast(i + k));
         }

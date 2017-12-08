@@ -33,7 +33,7 @@ public class Writer {
         BufferedWriter writer = Files.newBufferedWriter(path, CHARSET);
         CSVPrinter printer = new CSVPrinter(writer, CSV_WRITER_FORMAT);
 
-        for (int i = order + 1; i <= timeSeries.getSize() + order; ++i) {
+        for (int i = 1; i <= timeSeries.getSize(); ++i) {
             double value = timeSeries.getTimeValue(i);
             List<String> record = new ArrayList<>();
             record.add(String.valueOf(i));

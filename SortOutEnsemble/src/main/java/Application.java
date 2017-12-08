@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Application {
     public static void main(String[] args) throws IOException {
@@ -30,13 +29,6 @@ public class Application {
             return;
         }
         if (params[11].equals("Test")) {
-//            List<Object> keys = timeSeries.getTimeSeries().keySet().stream().collect(Collectors.toList());
-//            int trainSize = (int) (keys.size() * 0.9);
-//            TimeSeries timeSeriesProcess = new TimeSeries();
-//            for (Object key : keys.subList(0, trainSize)) {
-//                timeSeriesProcess.addTimeValue(timeSeries.getTimeValue((int) key));
-//            }
-
             SortOutEnsemble sortOut = new SortOutEnsemble(
                     timeSeries,
                     (params[0].equals("1")) ? true : false,

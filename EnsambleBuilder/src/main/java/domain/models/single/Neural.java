@@ -59,8 +59,14 @@ public class Neural extends Model {
     public double forecast(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
         EnableForForecasting(t);
         INDArray x = Nd4j.create(1, order);
-        for (int i = 0; i < order; i++) {
-            x.putScalar(new int[]{0, i}, timeSeries.getTimeValue(t + i - order));
+        if(order >= t) {
+            for (int i = 0; i < order; i++) {
+                x.putScalar(new int[]{0, i}, timeSeries.getTimeValue(i + 1));
+            }
+        } else {
+            for (int i = 0; i < order; i++) {
+                x.putScalar(new int[]{0, i}, timeSeries.getTimeValue(t + i - order));
+            }
         }
         INDArray res = net.output(x, false);
         return res.getDouble(0);

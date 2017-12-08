@@ -77,7 +77,7 @@ public class WeightedAverageEnsemble extends Ensemble {
         double sumMapes = 0;
         for (Model model : models) {
             double sum = 0;
-            for (int t = order + 1; t <= timeSeriesTrain.getSize(); ++t) {
+            for (int t = 1; t <= timeSeriesTrain.getSize(); ++t) {
                 sum += Quality.percentError(timeSeriesTrain.getTimeValue(t), model.forecast(t));
             }
 

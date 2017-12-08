@@ -136,10 +136,36 @@ public class SortOutEnsemble {
      */
     private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException, InvalidOrderException {
         List<Model> models = new ArrayList<>(order);
-        for (int i = 1; i <= order; ++i) {
-            Model creation = createModel(model, i);
-            creation.fit();
-            models.add(creation);
+        int i = (model != Models.ARIMA) ? 1 : 1;
+        for (; i <= order; ++i) {
+            if (model == Models.ARIMA) {
+                ////////////////////////////////////////////////////////////////////////
+                if(models.size() == 2) {
+                    break;
+                }
+                for (int d = 0; d <= 2; ++d) {
+                    ////////////////////////////////////////////////////////////////////////
+                    if(models.size() == 2) {
+                        break;
+                    }
+                    for (int q = 0; q <= order; ++q) {
+                        if(i == 0 && q == 0) {
+                            continue;
+                        }
+                        Model creation = createModel(model, i, d, q);
+                        creation.fit();
+                        models.add(creation);
+                       ////////////////////////////////////////////////////////////////////////
+                        if(models.size() == 2) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                Model creation = createModel(model, i, 0, 0);
+                creation.fit();
+                models.add(creation);
+            }
         }
         return models;
     }
@@ -152,10 +178,10 @@ public class SortOutEnsemble {
      * @return модель.
      */
     @NotNull
-    private Model createModel(Models model, int order) throws InvalidOrderException {
+    private Model createModel(Models model, int order, int diff, int errOrder) throws InvalidOrderException {
         switch (model) {
             case ARIMA: {
-                return new Arima(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
+                return new Arima(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT, diff, errOrder);
             }
             case NEURAL: {
                 return new Neural(timeSeries, order, forecastCount, TRAIN_PERSENT, TEST_PERSENT);
@@ -204,12 +230,12 @@ public class SortOutEnsemble {
      * @return таблица перебора моделей
      */
     private List<String> tableSortOut(int size) {
-        int tableSize = (int) Math.pow(2, size);
+        long tableSize = (int) Math.pow(2, size);
         System.out.println(size);
-        List<String> tableSortOut = new ArrayList<>(tableSize);
-        for (int i = 1; i <= tableSize - 1; ++i) {
-            String rowSortOut = Integer.toBinaryString(i);
-            for(int k = 0; k < size; ++k) {
+        List<String> tableSortOut = new ArrayList<>();
+        for (long i = 1; i <= tableSize - 1; ++i) {
+            String rowSortOut = Long.toBinaryString(i);
+            for (int k = 0; k < size; ++k) {
                 rowSortOut = "0" + rowSortOut;
             }
             System.out.println(rowSortOut);
