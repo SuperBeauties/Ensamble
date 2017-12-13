@@ -28,6 +28,7 @@ public class WeightedAverageEnsemble extends Ensemble {
      * Обучить метаалгоритм ансамблевой модели.
      */
     protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
+        System.out.println("Идентификация ансамбля WA");
         Map<Model, Double> modelsMapes = new HashMap<Model, Double>();
         double sumMapes = calculateMapeForModels(modelsMapes);
         for (Map.Entry<Model, Double> modelMape : modelsMapes.entrySet()) {

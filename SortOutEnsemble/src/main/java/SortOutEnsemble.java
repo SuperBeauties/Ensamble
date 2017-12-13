@@ -62,11 +62,14 @@ public class SortOutEnsemble {
      * Необходимо ли строить средневзвешенный ансамбль.
      */
     private final boolean needWeightedEnsemble;
-
     /**
      * Горизонт прогноза.
      */
     private final int forecastCount;
+    /**
+     * Является ли временной ряд стационарным.
+     */
+    private final boolean isStationary;
 
     private final static int TRAIN_PERSENT = 70;
     private final static int TEST_PERSENT = 20;
@@ -83,7 +86,8 @@ public class SortOutEnsemble {
             int orderFuzzy,
             boolean needNeuralEnsemble,
             boolean needWightedEnsemble,
-            int forecastCount) {
+            int forecastCount,
+            boolean isStationary) {
 
         this.timeSeries = timeSeries;
         this.orderArima = orderArima;
@@ -97,6 +101,7 @@ public class SortOutEnsemble {
         this.needNeuralEnsemble = needNeuralEnsemble;
         this.needWeightedEnsemble = needWightedEnsemble;
         this.forecastCount = forecastCount;
+        this.isStationary = isStationary;
     }
 
     /**
@@ -111,6 +116,7 @@ public class SortOutEnsemble {
      */
     public void sortOut(List<Model> allModels, List<Ensemble> weighted, List<Ensemble> neural) throws InvalidTemporaryValueException, ForecastNotFitedModelException, NoEqualsTimeSeriesException, TimeSeriesSizeException, IOException, InvalidOrderException {
         List<Model> empty = new ArrayList<>(0);
+        System.out.println("Обучение автономных моделей");
         List<Model> modelsArima = (!needArima) ? empty : fitedModels(Models.ARIMA, orderArima);
         List<Model> modelsNeural = (!needNeural) ? empty : fitedModels(Models.NEURAL, orderNeural);
         List<Model> modelsFuzzy = (!needFuzzy) ? empty : fitedModels(Models.FUZZY, orderFuzzy);
@@ -119,9 +125,13 @@ public class SortOutEnsemble {
         allModels.addAll(modelsNeural);
         allModels.addAll(modelsFuzzy);
 
+        System.out.println("Создание ансамблей");
         createEnsembleLists(allModels, weighted, neural);
+        System.out.println("Фильтрация средневзвешенных ансамблей");
         selectEnsembles(weighted);
+        System.out.println("Фильтрация нейросетевых ансамблей");
         selectEnsembles(neural);
+        System.out.println("Фильтрация автономных моделей");
         selectModels(allModels);
     }
 
@@ -136,30 +146,16 @@ public class SortOutEnsemble {
      */
     private List<Model> fitedModels(Models model, int order) throws InvalidTemporaryValueException, ForecastNotFitedModelException, IOException, InvalidOrderException {
         List<Model> models = new ArrayList<>(order);
-        int i = (model != Models.ARIMA) ? 1 : 1;
+        int i = (model != Models.ARIMA) ? 1 : 0;
         for (; i <= order; ++i) {
             if (model == Models.ARIMA) {
-                ////////////////////////////////////////////////////////////////////////
-                if(models.size() == 2) {
-                    break;
-                }
-                for (int d = 0; d <= 2; ++d) {
-                    ////////////////////////////////////////////////////////////////////////
-                    if(models.size() == 2) {
-                        break;
+                for (int q = 0; q <= order; ++q) {
+                    if (i == 0 && q == 0) {
+                        continue;
                     }
-                    for (int q = 0; q <= order; ++q) {
-                        if(i == 0 && q == 0) {
-                            continue;
-                        }
-                        Model creation = createModel(model, i, d, q);
-                        creation.fit();
-                        models.add(creation);
-                       ////////////////////////////////////////////////////////////////////////
-                        if(models.size() == 2) {
-                            break;
-                        }
-                    }
+                    Model creation = createModel(model, i, (isStationary) ? 0 : 2, q);
+                    creation.fit();
+                    models.add(creation);
                 }
             } else {
                 Model creation = createModel(model, i, 0, 0);
@@ -231,14 +227,12 @@ public class SortOutEnsemble {
      */
     private List<String> tableSortOut(int size) {
         long tableSize = (int) Math.pow(2, size);
-        System.out.println(size);
         List<String> tableSortOut = new ArrayList<>();
         for (long i = 1; i <= tableSize - 1; ++i) {
             String rowSortOut = Long.toBinaryString(i);
             for (int k = 0; k < size; ++k) {
                 rowSortOut = "0" + rowSortOut;
             }
-            System.out.println(rowSortOut);
             tableSortOut.add(rowSortOut.substring(rowSortOut.length() - size));
         }
         return tableSortOut;

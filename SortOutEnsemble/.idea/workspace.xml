@@ -16,12 +16,22 @@
       <file leaf-file-name="SortOutEnsemble.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SortOutEnsemble.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="118">
-              <caret line="138" column="47" lean-forward="false" selection-start-line="138" selection-start-column="47" selection-end-line="138" selection-end-column="47" />
+            <state relative-caret-position="2244">
+              <caret line="148" column="24" lean-forward="false" selection-start-line="148" selection-start-column="24" selection-end-line="148" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+                <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Application.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Application.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="100" column="103" lean-forward="false" selection-start-line="100" selection-start-column="103" selection-end-line="100" selection-end-column="103" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -29,60 +39,18 @@
       <file leaf-file-name="Writer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Writer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+            <state relative-caret-position="1020">
+              <caret line="72" column="35" lean-forward="false" selection-start-line="72" selection-start-column="35" selection-end-line="72" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WeightedAverageEnsemble.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/ensemble/WeightedAverageEnsemble.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="29" column="55" lean-forward="false" selection-start-line="29" selection-start-column="55" selection-end-line="29" selection-end-column="55" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Arima.class" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Arima.class" pinned="false" current-in-tab="false">
         <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Arima.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="79" column="30" lean-forward="false" selection-start-line="79" selection-start-column="30" selection-end-line="79" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BackShift.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/com/workday/timeseries-forecast/1.1.1/timeseries-forecast-1.1.1.jar!/com/workday/insights/timeseries/arima/struct/BackShift.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="181" column="0" lean-forward="false" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TimeSeries.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/TimeSeries.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-              <folding>
-                <element signature="e#1221#1222#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SortOutEnsemble.iml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SortOutEnsemble.iml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2227">
-              <caret line="131" column="30" lean-forward="false" selection-start-line="131" selection-start-column="30" selection-end-line="131" selection-end-column="30" />
+            <state relative-caret-position="884">
+              <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -113,12 +81,22 @@
       <file leaf-file-name="EnsembleUtil.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+            <state relative-caret-position="1666">
+              <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
+                <marker date="1512994272629" expanded="true" signature="8937:9644" ph="{...}" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Neural.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Neural.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="40" column="24" lean-forward="false" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -136,6 +114,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>put</find>
+      <find>sys</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -154,13 +133,13 @@
         <option value="$PROJECT_DIR$/src/main/java/InvalidDescriptionException.java" />
         <option value="$PROJECT_DIR$/src/main/java/app/Application.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/Application.java" />
         <option value="$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/TimeSeries.class" />
         <option value="$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/ensemble/WeightedAverageEnsemble.class" />
-        <option value="$PROJECT_DIR$/src/main/java/EnsembleUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/Writer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SortOutEnsemble.java" />
         <option value="$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Arima.class" />
+        <option value="$PROJECT_DIR$/src/main/java/SortOutEnsemble.java" />
+        <option value="$PROJECT_DIR$/src/main/java/EnsembleUtil.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Application.java" />
       </list>
     </option>
   </component>
@@ -177,7 +156,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="10" />
     <option name="y" value="20" />
     <option name="width" value="1346" />
@@ -206,7 +185,7 @@
     </entry>
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -219,54 +198,7 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="AndroidView" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SortOutEnsemble" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SortOutEnsemble" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -444,10 +376,11 @@
       <properties />
       <listeners />
     </configuration>
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="Application.Application1" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.SortOutEnsembleTest.sortOut" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.ReaderTest.ShouldReadTS" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="Application.Application" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Application1" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.SortOutEnsembleTest.sortOut" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.ReaderTest.ShouldReadTS" />
     </list>
     <recent_temporary>
       <list size="4">
@@ -473,7 +406,10 @@
       <workItem from="1512373929881" duration="28168000" />
       <workItem from="1512459133279" duration="14379000" />
       <workItem from="1512540480951" duration="7026000" />
-      <workItem from="1512746858852" duration="13394000" />
+      <workItem from="1512746858852" duration="13753000" />
+      <workItem from="1512987437468" duration="8172000" />
+      <workItem from="1513013395309" duration="1155000" />
+      <workItem from="1513101464284" duration="582000" />
     </task>
     <servers />
   </component>
@@ -501,26 +437,24 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90287000" />
+    <option name="totallyTimeSpent" value="100555000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.49707174" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3895899" sideWeight="0.5058565" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4400631" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4400631" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24304539" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24304539" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -532,6 +466,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.49707174" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -549,18 +484,18 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45899054" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42113563" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.49707174" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4400631" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3895899" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24304539" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
@@ -573,27 +508,29 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="72" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java</url>
+          <line>92</line>
+          <properties />
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java</url>
+          <line>80</line>
+          <properties />
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="81" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1496">
-          <caret line="101" column="53" lean-forward="false" selection-start-line="101" selection-start-column="53" selection-end-line="101" selection-end-column="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="30" column="10" lean-forward="false" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -603,7 +540,7 @@
           <caret line="231" column="0" lean-forward="false" selection-start-line="231" selection-start-column="0" selection-end-line="231" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -612,7 +549,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -621,7 +557,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="8" column="19" lean-forward="false" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -676,7 +611,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="10" column="11" lean-forward="false" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -684,9 +618,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="97">
           <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -696,7 +628,7 @@
           <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
+            <marker date="1512994272629" expanded="true" signature="8937:9644" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -714,7 +646,7 @@
           <caret line="159" column="105" lean-forward="true" selection-start-line="159" selection-start-column="105" selection-end-line="159" selection-end-column="105" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -723,7 +655,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="26" column="37" lean-forward="true" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -733,7 +664,7 @@
           <caret line="131" column="40" lean-forward="false" selection-start-line="131" selection-start-column="40" selection-end-line="131" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -742,9 +673,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2159">
           <caret line="138" column="56" lean-forward="false" selection-start-line="138" selection-start-column="56" selection-end-line="138" selection-end-column="56" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -772,7 +701,7 @@
           <caret line="202" column="20" lean-forward="false" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
+            <marker date="1512994272629" expanded="true" signature="8937:9644" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -781,7 +710,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="30" column="35" lean-forward="false" selection-start-line="30" selection-start-column="35" selection-end-line="30" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -791,7 +719,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -800,9 +728,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="765">
           <caret line="45" column="50" lean-forward="false" selection-start-line="45" selection-start-column="50" selection-end-line="45" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -837,7 +763,7 @@
           <caret line="101" column="53" lean-forward="false" selection-start-line="101" selection-start-column="53" selection-end-line="101" selection-end-column="53" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
+            <marker date="1512994272629" expanded="true" signature="8937:9644" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -846,7 +772,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="30" column="10" lean-forward="false" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -856,7 +781,7 @@
           <caret line="231" column="0" lean-forward="false" selection-start-line="231" selection-start-column="0" selection-end-line="231" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -865,7 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -913,7 +837,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2227">
           <caret line="131" column="30" lean-forward="false" selection-start-line="131" selection-start-column="30" selection-end-line="131" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -921,7 +844,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -929,7 +851,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="64" column="25" lean-forward="false" selection-start-line="64" selection-start-column="25" selection-end-line="64" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -937,17 +858,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="48" column="24" lean-forward="true" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Application.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/TimeSeries.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="527">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/workday/timeseries-forecast/1.1.1/timeseries-forecast-1.1.1.jar!/com/workday/insights/timeseries/arima/struct/BackShift.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2822">
+          <caret line="181" column="0" lean-forward="false" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -955,62 +879,59 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="29" column="55" lean-forward="false" selection-start-line="29" selection-start-column="55" selection-end-line="29" selection-end-column="55" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Arima.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1512757928302" expanded="true" signature="9258:9965" ph="{...}" />
-          </folding>
+        <state relative-caret-position="884">
+          <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Writer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+        <state relative-caret-position="1020">
+          <caret line="72" column="35" lean-forward="false" selection-start-line="72" selection-start-column="35" selection-end-line="72" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SortOutEnsemble.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="138" column="47" lean-forward="false" selection-start-line="138" selection-start-column="47" selection-end-line="138" selection-end-column="47" />
+        <state relative-caret-position="2244">
+          <caret line="148" column="24" lean-forward="false" selection-start-line="148" selection-start-column="24" selection-end-line="148" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1512758799364" expanded="true" signature="9007:9265" ph="{...}" />
+            <marker date="1512991910292" expanded="true" signature="8808:9022" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/TimeSeries.class">
+    <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Neural.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding>
-            <element signature="e#1221#1222#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/workday/timeseries-forecast/1.1.1/timeseries-forecast-1.1.1.jar!/com/workday/insights/timeseries/arima/struct/BackShift.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="181" column="0" lean-forward="false" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+        <state relative-caret-position="323">
+          <caret line="40" column="24" lean-forward="false" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/ensemble-builder/ensemble-builder/1.0-SNAPSHOT/ensemble-builder-1.0-SNAPSHOT.jar!/domain/models/single/Arima.class">
+    <entry file="file://$PROJECT_DIR$/src/main/java/EnsembleUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="79" column="30" lean-forward="false" selection-start-line="79" selection-start-column="30" selection-end-line="79" selection-end-column="30" />
+        <state relative-caret-position="1666">
+          <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1512994272629" expanded="true" signature="8937:9644" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="100" column="103" lean-forward="false" selection-start-line="100" selection-start-column="103" selection-end-line="100" selection-end-column="103" />
           <folding />
         </state>
       </provider>

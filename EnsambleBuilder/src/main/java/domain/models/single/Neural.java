@@ -43,10 +43,11 @@ public class Neural extends Model {
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);
         net.init();
-        net.setListeners(new ScoreIterationListener(1));
+        //net.setListeners(new ScoreIterationListener(1));
     }
 
     public void fit() {
+        System.out.println("Идентификация модели ANN");
         final DataSetIterator iterator = getTrainingData();
         for (int i = 0; i < N_EPOCHS; i++) {
             iterator.reset();
@@ -89,7 +90,6 @@ public class Neural extends Model {
             }
             forecast[i] = net.output(x, false).getDouble(0);
         }
-        System.out.println(Arrays.toString(forecast));
     }
 
     /**

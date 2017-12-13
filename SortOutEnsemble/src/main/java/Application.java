@@ -21,14 +21,14 @@ public class Application {
             return;
         }
         timeSeries.normalize();
-        String[] params = new String[0];
+        String[] params;
         try {
             params = reader.readParams();
         } catch (IOException e) {
             (new Writer()).writeException(e.getMessage(), Arrays.toString(e.getStackTrace()));
             return;
         }
-        if (params[11].equals("Test")) {
+        if (params[12].equals("Test")) {
             SortOutEnsemble sortOut = new SortOutEnsemble(
                     timeSeries,
                     (params[0].equals("1")) ? true : false,
@@ -41,7 +41,9 @@ public class Application {
                     Integer.parseInt(params[7]),
                     (params[8].equals("1")) ? true : false,
                     (params[9].equals("1")) ? true : false,
-                    Integer.parseInt(params[10]));
+                    Integer.parseInt(params[10]),
+                    (params[11].equals("1")) ? true : false
+                    );
 
             List<Model> allModels = new ArrayList<>();
             List<Ensemble> weighted = new ArrayList<>();

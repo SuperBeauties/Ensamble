@@ -61,8 +61,8 @@ public class EnsembleUtil {
      */
     public void write() throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException {
         write(allModels);
-        write(weighted, "средневзвешенный");
-        write(neural, "нейросетевой");
+        write(weighted, "WA_Ensemble");
+        write(neural, "ANN_ENSEMBLE");
     }
 
     /**
@@ -73,25 +73,22 @@ public class EnsembleUtil {
      */
     public Model read() throws IOException, InvalidDescriptionException, NoEqualsTimeSeriesException, InvalidOrderException {
         String description = reader.readDescription();
-        description = description.replace("Тип ансамбля:", "");
-        description = description.replace("Включает модели:", "");
         description = description.replace("\"", "");
         description = description.replace(".", "");
+        description = description.replace("(", "");
+        description = description.replace(")", "");
 
         Ensemble ensemble;
-        if (description.contains("автономная модель")) {
-            description = description.replace("автономная модель", "");
+        if (description.contains("WA_Ensemble")) {
+            description = description.replace("WA_Ensemble", "");
+            ensemble = new WeightedAverageEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
+        } else if (description.contains("ANN_ENSEMBLE")) {
+            description = description.replace("ANN_ENSEMBLE", "");
+            ensemble = new NeuralEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
+        } else {
             description = description.replace(";", "");
             Model model = getModelFromDescription(description);
             return model;
-        } else if (description.contains("средневзвешенный")) {
-            description = description.replace("средневзвешенный", "");
-            ensemble = new WeightedAverageEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
-        } else if (description.contains("нейросетевой")) {
-            description = description.replace("нейросетевой", "");
-            ensemble = new NeuralEnsemble(timeSeries, forecastCount, trainPercent, testPercent);
-        } else {
-            throw new InvalidDescriptionException();
         }
         description = description.trim();
         String[] modelDescriptions = description.split(";");
@@ -115,10 +112,11 @@ public class EnsembleUtil {
     private void write(List<Ensemble> ensembles, String type) throws InvalidTemporaryValueException, ForecastNotFitedModelException, TimeSeriesSizeException, IOException {
         for (Ensemble ensemble : ensembles) {
             StringBuilder descriptionBuilder = new StringBuilder();
-            descriptionBuilder.append("Тип ансамбля: " + type + ". Включает модели: ");
+            descriptionBuilder.append(type + "(");
             for (Model model : ensemble.getModels()) {
                 descriptionBuilder.append(getModelDescription(model));
             }
+            descriptionBuilder.append(")");
             write(ensemble, descriptionBuilder.toString());
         }
     }
@@ -135,7 +133,6 @@ public class EnsembleUtil {
     private void write(List<Model> models) throws ForecastNotFitedModelException, TimeSeriesSizeException, InvalidTemporaryValueException, IOException {
         for (Model model : models) {
             StringBuilder descriptionBuilder = new StringBuilder();
-            descriptionBuilder.append("Тип ансамбля: автономная модель.  Включает модели: ");
             descriptionBuilder.append(getModelDescription(model));
             write(model, descriptionBuilder.toString());
         }
@@ -181,15 +178,15 @@ public class EnsembleUtil {
     private StringBuilder getModelDescription(Model model) {
         StringBuilder descriptionBuilder = new StringBuilder();
         if (model instanceof Arima) {
-            descriptionBuilder.append("Arima( ");
+            descriptionBuilder.append("Arima(");
             descriptionBuilder.append(model.getOrder() + ",");
             descriptionBuilder.append(((Arima) model).getDiff() + ",");
             descriptionBuilder.append(((Arima) model).getErrOrder() + "); ");
             return descriptionBuilder;
         } else if (model instanceof Neural) {
-            descriptionBuilder.append("ANN( ");
+            descriptionBuilder.append("ANN(");
         } else if (model instanceof Fuzzy) {
-            descriptionBuilder.append("S( ");
+            descriptionBuilder.append("S(");
         }
         descriptionBuilder.append(model.getOrder() + "); ");
         return descriptionBuilder;

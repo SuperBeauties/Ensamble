@@ -45,10 +45,11 @@ public class NeuralEnsemble extends Ensemble {
     }
 
     protected void fitMetaAlgorithm() throws InvalidTemporaryValueException, ForecastNotFitedModelException {
+        System.out.println("Идентификация ансамбля ANN");
         final MultiLayerConfiguration conf = getDeepDenseLayerNetworkConfiguration();
         net = new MultiLayerNetwork(conf);
         net.init();
-        net.setListeners(new ScoreIterationListener(1));
+        //net.setListeners(new ScoreIterationListener(1));
 
         final DataSetIterator iterator = getTrainingData();
         for (int i = 0; i < N_EPOCHS; i++) {
@@ -80,12 +81,9 @@ public class NeuralEnsemble extends Ensemble {
             for (int j = 0; j < models.size(); ++j) {
                 Model model = models.get(j);
                 x.putScalar(new int[]{0, j}, model.getForecast()[i]);
-                System.out.println("Neural");
-                System.out.println(model.getForecast()[i]);
             }
             forecast[i] = net.output(x, false).getDouble(0);
         }
-        System.out.println(Arrays.toString(forecast));
     }
 
     /**

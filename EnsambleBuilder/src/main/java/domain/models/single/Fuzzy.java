@@ -32,14 +32,13 @@ public class Fuzzy extends Model {
     }
 
     public void fit() throws IOException {
+        System.out.println("Идентификация модели Song");
         HttpClient client = HttpClients.createDefault();
         HttpPost post = new HttpPost("http://salx.pw/api/FModel/S");
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
 
         StringEntity input = getTrainingData();
-        System.out.println(input);
-
         post.setEntity(input);
         HttpResponse response = client.execute(post);
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -65,12 +64,10 @@ public class Fuzzy extends Model {
      */
     private void predict() {
         Gson gson = new GsonBuilder().create();
-        System.out.println(gson.toJson(stub));
         forecast = new double[forecastCount];
         for(int i = 0; i < forecastCount; ++i) {
             forecast[i] = stub.getROW().get(timeSeries.getSize() + i - 1).getY();
         }
-        System.out.println(Arrays.toString(forecast));
     }
 
     /**

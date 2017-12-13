@@ -11,11 +11,14 @@ import domain.TimeSeries;
 import domain.exceptions.ForecastNotFitedModelException;
 import domain.exceptions.InvalidOrderException;
 import domain.exceptions.InvalidTemporaryValueException;
+import org.apache.commons.math3.util.Precision;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 
+@ParametersAreNonnullByDefault
 public class Arima extends Model {
     private ArimaModel fittedModel;
     private final int d;
@@ -48,6 +51,7 @@ public class Arima extends Model {
     }
 
     public void fit() throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+        System.out.println("Идентификация модели Arima");
         double[] data = getTrainingData(timeSeriesTrain);
         paramsForecast = new ArimaParams(order, d, q, P, D, Q, m);
         fittedModel = ArimaSolver.estimateARIMA(paramsForecast, data, data.length, data.length + 1);
@@ -65,7 +69,7 @@ public class Arima extends Model {
     private void forecast() throws ForecastNotFitedModelException, InvalidTemporaryValueException {
         final double[] forecast_stationary = new double[timeSeries.getSize()];
         for (int t = 1; t <= timeSeries.getSize(); ++t) {
-            forecast_stationary[t - 1] = forecastValue(t);
+            forecast_stationary[t - 1] = forecastValue(t, forecast_stationary);
         }
         //=========== UN-CENTERING =================
         Integrator.shift(forecast_stationary, mean_stationary);
@@ -87,14 +91,19 @@ public class Arima extends Model {
      * @param t метка времени прогнозируемого значения.
      * @return значение.
      */
-    private double forecastValue(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
-        double[] values = getDataForForecast(t, order);
-        double[] errors = getErrorsForForecast(t);
-        //double[] valuesP = fittedModel.getParams().getCurrentARCoefficients();
-        //double[] errorsP = fittedModel.getParams().getCurrentMACoefficients();
-        final double estimateAR = _opAR.getLinearCombinationFrom(values, order);
-        final double estimateMA = _opMA.getLinearCombinationFrom(errors, q);
-        final double forecastValue = estimateAR + estimateMA;
+    private double forecastValue(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+        final double forecastValue;
+        if (Precision.equals(forecast_stationary[t - 1], 0.0)) {
+            double[] values = getDataForForecast(t, order);
+            double[] errors = getErrorsForForecast(t, forecast_stationary);
+            //double[] valuesP = fittedModel.getParams().getCurrentARCoefficients();
+            //double[] errorsP = fittedModel.getParams().getCurrentMACoefficients();
+            final double estimateAR = _opAR.getLinearCombinationFrom(values, order);
+            final double estimateMA = _opMA.getLinearCombinationFrom(errors, q);
+            forecastValue = estimateAR + estimateMA;
+        } else {
+            forecastValue = forecast_stationary[t - 1];
+        }
         return Math.abs(forecastValue);
     }
 
@@ -138,24 +147,6 @@ public class Arima extends Model {
         return q;
     }
 
-//    /**
-//     * Рассчитать значение части прогноза.
-//     *
-//     * @param values значения ряда.
-//     * @param coefs  коэффициенты.
-//     * @return значение.
-//     */
-//    @Contract(pure = true)
-//    private double calcPart(double[] values, double[] coefs) {
-//        if (coefs.length == 0) {
-//            return 0.0;
-//        }
-//        double sum = coefs[0];
-//        for (int i = 0; i < values.length; ++i) {
-//            sum += values[i] * coefs[i + 1];
-//        }
-//        return sum;
-//    }
 
     /**
      * Сформировать данные для прогноза.
@@ -163,6 +154,7 @@ public class Arima extends Model {
      * @param t временная метка прогноза.
      * @return данные для прогноза.
      */
+    @Contract(pure = true)
     private double[] getDataForForecast(int t, int order) {
         double[] values = new double[order];
         if (order >= t) {
@@ -183,7 +175,7 @@ public class Arima extends Model {
      * @param t временная метка прогноза.
      * @return данные для прогноза.
      */
-    private double[] getErrorsForForecast(int t) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+    private double[] getErrorsForForecast(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
         double[] values = getDataForForecast(t, q);
         double[] errors = new double[q];
         for (int i = 0; i < q; i++) {
@@ -191,7 +183,7 @@ public class Arima extends Model {
             if (_t < order + 1 || _t < q + 1) {
                 errors[i] = 0;
             } else {
-                errors[i] = values[i] - forecastValue(_t);
+                errors[i] = values[i] - forecastValue(_t, forecast_stationary);
             }
         }
         return errors;
@@ -204,7 +196,6 @@ public class Arima extends Model {
         double[] data = getTrainingData(timeSeriesTrain);
         ArimaParams paramsForecast = new ArimaParams(order, d, q, P, D, Q, m);
         forecast = com.workday.insights.timeseries.arima.Arima.forecast_arima(data, forecastCount, paramsForecast).getForecast();
-        System.out.println(Arrays.toString(forecast));
     }
 
     /**
@@ -312,10 +303,10 @@ public class Arima extends Model {
     /**
      * Differentiate procedures for forecast and estimate ARIMA.
      *
-     * @param params ARIMA parameters
+     * @param params                 ARIMA parameters
      * @param dataForecastStationary stationary forecast data
-     * @param hasSeasonalI has seasonal I or not based on the parameter
-     * @param hasNonSeasonalI has NonseasonalI or not based on the parameter
+     * @param hasSeasonalI           has seasonal I or not based on the parameter
+     * @param hasNonSeasonalI        has NonseasonalI or not based on the parameter
      * @return merged forecast data
      */
     private static double[] integrate(ArimaParams params, double[] dataForecastStationary,
