@@ -180,7 +180,7 @@ public class EnsembleUtil {
         if (model instanceof Arima) {
             descriptionBuilder.append("Arima(");
             descriptionBuilder.append(model.getOrder() + ",");
-            descriptionBuilder.append(((Arima) model).getDiff() + ",");
+            descriptionBuilder.append(((((Arima) model).getDiff() == 0) ? 0 : 2) + ",");
             descriptionBuilder.append(((Arima) model).getErrOrder() + "); ");
             return descriptionBuilder;
         } else if (model instanceof Neural) {
@@ -210,7 +210,7 @@ public class EnsembleUtil {
             int order = Integer.parseInt(orders[0].replaceAll("[^0-9]", ""));
             int diff = Integer.parseInt(orders[1].replaceAll("[^0-9]", ""));
             int errOrder = Integer.parseInt(orders[2].replaceAll("[^0-9]", ""));
-            model = new Arima(timeSeries, order, forecastCount, trainPercent, testPercent, diff, errOrder);
+            model = new Arima(timeSeries, order, forecastCount, trainPercent, testPercent, (diff == 0) ? 0 : 1, errOrder);
         } else if (modelDescription.contains("S")) {
             modelDescription = modelDescription.replace("S", "");
             int order = Integer.parseInt(modelDescription.replaceAll("[^0-9]", ""));

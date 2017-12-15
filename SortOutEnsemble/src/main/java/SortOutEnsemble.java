@@ -153,7 +153,7 @@ public class SortOutEnsemble {
                     if (i == 0 && q == 0) {
                         continue;
                     }
-                    Model creation = createModel(model, i, (isStationary) ? 0 : 2, q);
+                    Model creation = createModel(model, i, (isStationary) ? 0 : 1, q);
                     creation.fit();
                     models.add(creation);
                 }

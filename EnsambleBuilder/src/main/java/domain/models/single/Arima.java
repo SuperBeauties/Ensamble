@@ -47,7 +47,7 @@ public class Arima extends Model {
 
         resultTimeSeries = new TimeSeries();
 
-        setDifferentiateTimeSeries();
+        //setDifferentiateTimeSeries();
     }
 
     public void fit() throws ForecastNotFitedModelException, InvalidTemporaryValueException {
@@ -67,67 +67,102 @@ public class Arima extends Model {
     }
 
     private void forecast() throws ForecastNotFitedModelException, InvalidTemporaryValueException {
-        final double[] forecast_stationary = new double[timeSeries.getSize()];
-        for (int t = 1; t <= timeSeries.getSize(); ++t) {
-            forecast_stationary[t - 1] = forecastValue(t, forecast_stationary);
-        }
-        //=========== UN-CENTERING =================
-        Integrator.shift(forecast_stationary, mean_stationary);
-        //==========================================
-
-        //===========================================
-        // INTEGRATE
-        double[] forecast_merged = integrate(fittedModel.getParams(), forecast_stationary, false,
-                false);
-
-        for (int t = 0; t < forecast_merged.length; ++t) {
-            resultTimeSeries.add(t + 1, forecast_merged[t]);
-        }
-    }
-
-    /**
-     * Прогнозирование значения.
-     *
-     * @param t метка времени прогнозируемого значения.
-     * @return значение.
-     */
-    private double forecastValue(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
-        final double forecastValue;
-        if (Precision.equals(forecast_stationary[t - 1], 0.0)) {
-            double[] values = getDataForForecast(t, order);
-            double[] errors = getErrorsForForecast(t, forecast_stationary);
-            //double[] valuesP = fittedModel.getParams().getCurrentARCoefficients();
-            //double[] errorsP = fittedModel.getParams().getCurrentMACoefficients();
-            final double estimateAR = _opAR.getLinearCombinationFrom(values, order);
-            final double estimateMA = _opMA.getLinearCombinationFrom(errors, q);
-            forecastValue = estimateAR + estimateMA;
-        } else {
-            forecastValue = forecast_stationary[t - 1];
-        }
-        return Math.abs(forecastValue);
-    }
-
-    /**
-     * Интегрирование временного ряда.
-     */
-    private void setDifferentiateTimeSeries() {
         double[] data = getTrainingData(timeSeries);
-        final double[] data_train = new double[timeSeries.getSize()];
-        System.arraycopy(data, 0, data_train, 0, timeSeries.getSize());
+        double[] forecast = new double[1];
+        int start_idx = order > q ? order : q;
+        for (int i = 0; i < start_idx; ++i) {
+            resultTimeSeries.addTimeValue(data[i]);
+        }
+        for (int t = start_idx; t < data.length; ++t) {
+            double[] dataForecast = new double[t + 1];
+            for (int i = 0; i < t + 1; ++i) {
+                dataForecast[i] = data[i];
+            }
+            forecast = ArimaSolver.forecastARIMA(paramsForecast, dataForecast, dataForecast.length, dataForecast.length + 1).getForecast();
+            resultTimeSeries.addTimeValue(forecast[0]);
+        }
+        //resultTimeSeries.removeTimeValue(resultTimeSeries.getSize());
 
-        //=======================================
-        // DIFFERENTIATE
-        final boolean hasSeasonalI = false;
-        final boolean hasNonSeasonalI = false;
-        data_stationary = differentiate(paramsForecast, data_train, hasSeasonalI,
-                hasNonSeasonalI);  // currently un-centered
-        // END OF DIFFERENTIATE
-        //==========================================
+//        int forecast_length = forecastCount;
+//        double[] data = getTrainingData(timeSeries);
+//        double[] forecast = new double[forecast_length];
+//        double[] data_train = new double[data.length];
+//        System.arraycopy(data, 0, data_train, 0, data.length);
+//        boolean hasSeasonalI = paramsForecast.D > 0 && paramsForecast.m > 0;
+//        boolean hasNonSeasonalI = paramsForecast.d > 0;
+//        double[] data_stationary = differentiate(paramsForecast, data_train, hasSeasonalI, hasNonSeasonalI);
+//        double mean_stationary = Integrator.computeMean(data_stationary);
+//        Integrator.shift(data_stationary, -1.0D * mean_stationary);
+//        double dataVariance = Integrator.computeVariance(data_stationary);
+//        double[] forecast_stationary = ArimaSolver.forecastARMA(paramsForecast, data_stationary, data_stationary.length, data_stationary.length + forecast_length, data_stationary);
+//        Integrator.shift(forecast_stationary, mean_stationary);
+//        double[] forecast_merged = integrate(paramsForecast, forecast_stationary, hasSeasonalI, hasNonSeasonalI);
+//        for (int t = 0; t < forecast_merged.length; ++t) {
+//            resultTimeSeries.add(t + 1, forecast_merged[t]);
+//        }
 
-        //=========== CENTERING ====================
-        mean_stationary = Integrator.computeMean(data_stationary);
-        Integrator.shift(data_stationary, (-1) * mean_stationary);
+
+//        final double[] forecast_stationary = new double[timeSeries.getSize()];
+//        for (int t = 1; t <= timeSeries.getSize(); ++t) {
+//            forecast_stationary[t - 1] = forecastValue(t, forecast_stationary);
+//        }
+//        //=========== UN-CENTERING =================
+//        Integrator.shift(forecast_stationary, mean_stationary);
+//        //==========================================
+//
+//        //===========================================
+//        // INTEGRATE
+//        double[] forecast_merged = integrate(fittedModel.getParams(), forecast_stationary, false,
+//                false);
+//
+//        for (int t = 0; t < forecast_merged.length; ++t) {
+//            resultTimeSeries.add(t + 1, forecast_merged[t]);
+//        }
     }
+
+//    /**
+//     * Прогнозирование значения.
+//     *
+//     * @param t метка времени прогнозируемого значения.
+//     * @return значение.
+//     */
+//    private double forecastValue(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+//        final double forecastValue;
+//        if (Precision.equals(forecast_stationary[t - 1], 0.0)) {
+//            double[] values = getDataForForecast(t, order);
+//            double[] errors = getErrorsForForecast(t, forecast_stationary);
+//            //double[] valuesP = fittedModel.getParams().getCurrentARCoefficients();
+//            //double[] errorsP = fittedModel.getParams().getCurrentMACoefficients();
+//            final double estimateAR = _opAR.getLinearCombinationFrom(values, order);
+//            final double estimateMA = _opMA.getLinearCombinationFrom(errors, q);
+//            forecastValue = estimateAR + estimateMA;
+//        } else {
+//            forecastValue = forecast_stationary[t - 1];
+//        }
+//        return forecastValue;
+//    }
+
+//    /**
+//     * Интегрирование временного ряда.
+//     */
+//    private void setDifferentiateTimeSeries() {
+//        double[] data = getTrainingData(timeSeries);
+//        final double[] data_train = new double[timeSeries.getSize()];
+//        System.arraycopy(data, 0, data_train, 0, timeSeries.getSize());
+//
+//        //=======================================
+//        // DIFFERENTIATE
+//        final boolean hasSeasonalI = false;
+//        final boolean hasNonSeasonalI = false;
+//        data_stationary = differentiate(paramsForecast, data_train, hasSeasonalI,
+//                hasNonSeasonalI);  // currently un-centered
+//        // END OF DIFFERENTIATE
+//        //==========================================
+//
+//        //=========== CENTERING ====================
+//        mean_stationary = Integrator.computeMean(data_stationary);
+//        Integrator.shift(data_stationary, (-1) * mean_stationary);
+//    }
 
     /**
      * Получить порядок интегрирования.
@@ -148,54 +183,53 @@ public class Arima extends Model {
     }
 
 
-    /**
-     * Сформировать данные для прогноза.
-     *
-     * @param t временная метка прогноза.
-     * @return данные для прогноза.
-     */
-    @Contract(pure = true)
-    private double[] getDataForForecast(int t, int order) {
-        double[] values = new double[order];
-        if (order >= t) {
-            for (int i = 0; i < order; i++) {
-                values[i] = data_stationary[i];
-            }
-        } else {
-            for (int i = 0; i < order; i++) {
-                values[i] = data_stationary[t + i - order - 1];
-            }
-        }
-        return values;
-    }
+//    /**
+//     * Сформировать данные для прогноза.
+//     *
+//     * @param t временная метка прогноза.
+//     * @return данные для прогноза.
+//     */
+//    @Contract(pure = true)
+//    private double[] getDataForForecast(int t, int order) {
+//        double[] values = new double[order];
+//        if (order >= t) {
+//            for (int i = 0; i < order; i++) {
+//                values[i] = data_stationary[i];
+//            }
+//        } else {
+//            for (int i = 0; i < order; i++) {
+//                values[i] = data_stationary[t + i - order - 1];
+//            }
+//        }
+//        return values;
+//    }
 
-    /**
-     * Сформировать данные для прогноза.
-     *
-     * @param t временная метка прогноза.
-     * @return данные для прогноза.
-     */
-    private double[] getErrorsForForecast(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
-        double[] values = getDataForForecast(t, q);
-        double[] errors = new double[q];
-        for (int i = 0; i < q; i++) {
-            int _t = t + i - q;
-            if (_t < order + 1 || _t < q + 1) {
-                errors[i] = 0;
-            } else {
-                errors[i] = values[i] - forecastValue(_t, forecast_stationary);
-            }
-        }
-        return errors;
-    }
+//    /**
+//     * Сформировать данные для прогноза.
+//     *
+//     * @param t временная метка прогноза.
+//     * @return данные для прогноза.
+//     */
+//    private double[] getErrorsForForecast(int t, double[] forecast_stationary) throws ForecastNotFitedModelException, InvalidTemporaryValueException {
+//        double[] values = getDataForForecast(t, q);
+//        double[] errors = new double[q];
+//        for (int i = 0; i < q; i++) {
+//            int _t = t + i - q;
+//            if (_t < order + 1 || _t < q + 1) {
+//                errors[i] = 0;
+//            } else {
+//                errors[i] = values[i] - forecastValue(_t, forecast_stationary);
+//            }
+//        }
+//        return errors;
+//    }
 
     /**
      * Расчет прогноза заданной длины.
      */
     private void predict() {
-        double[] data = getTrainingData(timeSeriesTrain);
-        ArimaParams paramsForecast = new ArimaParams(order, d, q, P, D, Q, m);
-        forecast = com.workday.insights.timeseries.arima.Arima.forecast_arima(data, forecastCount, paramsForecast).getForecast();
+        double[] data = getTrainingData(timeSeries);
+        forecast = ArimaSolver.forecastARIMA(paramsForecast, data, data.length, data.length + forecastCount).getForecast();
     }
 
     /**
@@ -213,35 +247,35 @@ public class Arima extends Model {
         return trainingData;
     }
 
-    /**
-     * Differentiate procedures for forecast and estimate ARIMA.
-     *
-     * @param params          ARIMA parameters
-     * @param trainingData    training data
-     * @param hasSeasonalI    has seasonal I or not based on the parameter
-     * @param hasNonSeasonalI has NonseasonalI or not based on the parameter
-     * @return stationary data
-     */
-    private static double[] differentiate(ArimaParams params, double[] trainingData,
-                                          boolean hasSeasonalI, boolean hasNonSeasonalI) {
-        double[] dataStationary;  // currently un-centered
-        if (hasSeasonalI && hasNonSeasonalI) {
-            params.differentiateSeasonal(trainingData);
-            params.differentiateNonSeasonal(params.getLastDifferenceSeasonal());
-            dataStationary = params.getLastDifferenceNonSeasonal();
-        } else if (hasSeasonalI) {
-            params.differentiateSeasonal(trainingData);
-            dataStationary = params.getLastDifferenceSeasonal();
-        } else if (hasNonSeasonalI) {
-            params.differentiateNonSeasonal(trainingData);
-            dataStationary = params.getLastDifferenceNonSeasonal();
-        } else {
-            dataStationary = new double[trainingData.length];
-            System.arraycopy(trainingData, 0, dataStationary, 0, trainingData.length);
-        }
-
-        return dataStationary;
-    }
+//    /**
+//     * Differentiate procedures for forecast and estimate ARIMA.
+//     *
+//     * @param params          ARIMA parameters
+//     * @param trainingData    training data
+//     * @param hasSeasonalI    has seasonal I or not based on the parameter
+//     * @param hasNonSeasonalI has NonseasonalI or not based on the parameter
+//     * @return stationary data
+//     */
+//    private static double[] differentiate(ArimaParams params, double[] trainingData,
+//                                          boolean hasSeasonalI, boolean hasNonSeasonalI) {
+//        double[] dataStationary;  // currently un-centered
+//        if (hasSeasonalI && hasNonSeasonalI) {
+//            params.differentiateSeasonal(trainingData);
+//            params.differentiateNonSeasonal(params.getLastDifferenceSeasonal());
+//            dataStationary = params.getLastDifferenceNonSeasonal();
+//        } else if (hasSeasonalI) {
+//            params.differentiateSeasonal(trainingData);
+//            dataStationary = params.getLastDifferenceSeasonal();
+//        } else if (hasNonSeasonalI) {
+//            params.differentiateNonSeasonal(trainingData);
+//            dataStationary = params.getLastDifferenceNonSeasonal();
+//        } else {
+//            dataStationary = new double[trainingData.length];
+//            System.arraycopy(trainingData, 0, dataStationary, 0, trainingData.length);
+//        }
+//
+//        return dataStationary;
+//    }
 
     public BackShift getNewOperatorAR() {
         return mergeSeasonalWithNonSeasonal(order, P, m);
@@ -300,35 +334,35 @@ public class Arima extends Model {
         return _opMA.paramOffsets();
     }
 
-    /**
-     * Differentiate procedures for forecast and estimate ARIMA.
-     *
-     * @param params                 ARIMA parameters
-     * @param dataForecastStationary stationary forecast data
-     * @param hasSeasonalI           has seasonal I or not based on the parameter
-     * @param hasNonSeasonalI        has NonseasonalI or not based on the parameter
-     * @return merged forecast data
-     */
-    private static double[] integrate(ArimaParams params, double[] dataForecastStationary,
-                                      boolean hasSeasonalI, boolean hasNonSeasonalI) {
-        double[] forecast_merged;
-        if (hasSeasonalI && hasNonSeasonalI) {
-            params.integrateSeasonal(dataForecastStationary);
-            params.integrateNonSeasonal(params.getLastIntegrateSeasonal());
-            forecast_merged = params.getLastIntegrateNonSeasonal();
-        } else if (hasSeasonalI) {
-            params.integrateSeasonal(dataForecastStationary);
-            forecast_merged = params.getLastIntegrateSeasonal();
-        } else if (hasNonSeasonalI) {
-            params.integrateNonSeasonal(dataForecastStationary);
-            forecast_merged = params.getLastIntegrateNonSeasonal();
-        } else {
-            forecast_merged = new double[dataForecastStationary.length];
-            System.arraycopy(dataForecastStationary, 0, forecast_merged, 0,
-                    dataForecastStationary.length);
-        }
-
-        return forecast_merged;
-    }
+//    /**
+//     * Differentiate procedures for forecast and estimate ARIMA.
+//     *
+//     * @param params                 ARIMA parameters
+//     * @param dataForecastStationary stationary forecast data
+//     * @param hasSeasonalI           has seasonal I or not based on the parameter
+//     * @param hasNonSeasonalI        has NonseasonalI or not based on the parameter
+//     * @return merged forecast data
+//     */
+//    private static double[] integrate(ArimaParams params, double[] dataForecastStationary,
+//                                      boolean hasSeasonalI, boolean hasNonSeasonalI) {
+//        double[] forecast_merged;
+//        if (hasSeasonalI && hasNonSeasonalI) {
+//            params.integrateSeasonal(dataForecastStationary);
+//            params.integrateNonSeasonal(params.getLastIntegrateSeasonal());
+//            forecast_merged = params.getLastIntegrateNonSeasonal();
+//        } else if (hasSeasonalI) {
+//            params.integrateSeasonal(dataForecastStationary);
+//            forecast_merged = params.getLastIntegrateSeasonal();
+//        } else if (hasNonSeasonalI) {
+//            params.integrateNonSeasonal(dataForecastStationary);
+//            forecast_merged = params.getLastIntegrateNonSeasonal();
+//        } else {
+//            forecast_merged = new double[dataForecastStationary.length];
+//            System.arraycopy(dataForecastStationary, 0, forecast_merged, 0,
+//                    dataForecastStationary.length);
+//        }
+//
+//        return forecast_merged;
+//    }
 
 }
